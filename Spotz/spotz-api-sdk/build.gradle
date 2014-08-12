@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.google.http-client:google-http-client:1.18.0-rc'
+    compile 'com.google.http-client:google-http-client-gson:1.18.0-rc'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

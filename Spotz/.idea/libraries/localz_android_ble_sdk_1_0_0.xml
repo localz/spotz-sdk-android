@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="localz-android-ble-sdk-1.0.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/spotz-android-sdk/build/intermediates/exploded-aar/com.localz.proximity.ble/localz-android-ble-sdk/1.0.0/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/spotz-android-sdk/build/intermediates/exploded-aar/com.localz.proximity.ble/localz-android-ble-sdk/1.0.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

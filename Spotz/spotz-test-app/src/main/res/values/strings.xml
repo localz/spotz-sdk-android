@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">spotz-test-APP</string>
+    <string name="title_activity_launch">LaunchActivity</string>
+    <string name="activity_launch_message_not_in_vicinity">Not in the vicinity</string>
+    <string name="activity_launch_message_in_vicinity">In the vicinity</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
