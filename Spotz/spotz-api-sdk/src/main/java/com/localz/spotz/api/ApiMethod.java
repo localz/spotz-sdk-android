@@ -152,7 +152,7 @@ public abstract class ApiMethod<T, V> {
         Mac sha256 = getSha256(secret);
         String dateString = dateFormat.format(date);
 
-        String data = "LocalzOFI:" + appId + ":" + (deviceId == null ? "" : deviceId + ":")
+        String data = "LocalzSpotz:" + appId + ":" + (deviceId == null ? "" : deviceId + ":")
                 + dateString + ":" + method + ":" + host + ":" + uri;
 
         if (json != null && ("POST".equals(method) || "PUT".equals(method))) {

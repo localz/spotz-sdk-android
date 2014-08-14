@@ -2,10 +2,12 @@ package com.localz.spotz.app.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.localz.spotz.app.R;
 import com.localz.spotz.sdk.Spotz;
@@ -15,18 +17,26 @@ import com.localz.spotz.sdk.models.InitializedResponse;
 
 public class LaunchActivity extends Activity {
 
+    public static final String TAG = "LaunchActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.activity_launch_progress_bar_id);
-        Spotz.getInstance().initialize(this, "appid", "secret", new InitializationListenerAdapter() {
+        Spotz.getInstance().initialize(this, "1234567890123456789012345678901234567890", "1234567890123456789012345678901234567890", new InitializationListenerAdapter() {
             @Override
             public void onInitialized(InitializedResponse initializedResponse) {
                 super.onInitialized(initializedResponse);
                 progressBar.setVisibility(View.INVISIBLE);
                 Spotz.getInstance().startScanningBeacons(LaunchActivity.this);
+            }
+
+            @Override
+            public void onError(Exception exception) {
+                super.onError(exception);
+                Log.e(TAG, "Exception while registering device ");
             }
         });
 

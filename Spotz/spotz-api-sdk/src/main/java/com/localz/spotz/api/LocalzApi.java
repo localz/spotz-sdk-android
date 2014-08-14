@@ -8,9 +8,9 @@ public class LocalzApi {
     private String appId;
     private String sid;
     private String secret;
-    private final String host = "https://api.localz.co/homepass-dev/v1";
+    //private final String host = "http://api.localz.co/spotz-dev/v1";
     //private final String host = "https://dev-api-homepass-com.herokuapp.com";
-    //private final String host = "http://10.0.1.9:3000";
+    private final String host = "http://10.0.1.36:3000";
     //private final String host = "http://192.168.1.11:3000";
 
     private LocalzApi() {

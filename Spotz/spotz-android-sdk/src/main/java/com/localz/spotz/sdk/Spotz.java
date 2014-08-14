@@ -42,8 +42,6 @@ public class Spotz {
     private LocationClient locationClient;
     private boolean initialized = false;
     private SharedPreferences sharedPreferences;
-    private String auid;
-    private String puid;
 
     private Spotz() {
     }
@@ -150,7 +148,7 @@ public class Spotz {
     }
 
     public void startScanningBeacons(Context context) {
-        scanForBeacons(context, auid, puid);
+        scanForBeacons(context);
     }
 
     public void stopScanningBeacons(Context context) {
@@ -181,9 +179,6 @@ public class Spotz {
                     initializedResponse.deviceId = response.data.deviceId;
                     listener.onInitialized(initializedResponse);
                 }
-
-                auid = response.data.auid;
-                puid = response.data.puid;
             }
 
             @Override
@@ -219,9 +214,6 @@ public class Spotz {
                     //initializedResponse.customer = response.data.customer;
                     listener.onInitialized(initializedResponse);
                 }
-
-                auid = response.data.auid;
-                puid = response.data.puid;
             }
 
             @Override
@@ -242,13 +234,11 @@ public class Spotz {
     /**
      * Start scanning for beacons. Only if the user has allowed, and that we are on Android SDK 18+.
      * @param context
-     * @param agentUuid The agent UUID.
-     * @param propertyUuid The property UUID.
      */
-    private void scanForBeacons(Context context, String agentUuid, String propertyUuid) {
+    private void scanForBeacons(Context context) {
         if (Build.VERSION.SDK_INT >= 18) {
             // Only scan for the UUIDs configured for their application
-            BleManager.getInstance().uuids(context, agentUuid, propertyUuid)
+            BleManager.getInstance().uuids(context)
                     .startScanning(context, BleManager.ScanMode.SMART);
         }
     }
