@@ -17,14 +17,17 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.localz.proximity.ble.BleData;
 import com.localz.spotz.api.LocalzApi;
 import com.localz.spotz.api.models.Response;
 import com.localz.spotz.api.models.request.v1.DeviceRegisterPostRequest;
 import com.localz.spotz.api.models.request.v1.DeviceUpdatePutRequest;
 import com.localz.spotz.api.models.response.v1.DeviceRegisterPostResponse;
 import com.localz.spotz.api.models.response.v1.DeviceUpdatePutResponse;
+import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 import com.localz.spotz.sdk.api.DeviceRegisterTask;
 import com.localz.spotz.sdk.api.DeviceUpdateTask;
+import com.localz.spotz.sdk.api.SpotzListingsTask;
 import com.localz.spotz.sdk.api.utils.ObscuredSharedPreferences;
 import com.localz.spotz.sdk.listeners.InitializationListenerAdapter;
 import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
@@ -32,6 +35,7 @@ import com.localz.spotz.sdk.models.InitializedResponse;
 import com.localz.proximity.ble.BleManager;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.TimeZone;
 
 public class Spotz {
@@ -133,6 +137,10 @@ public class Spotz {
         LocalzApi.getInstance().setSid(sid);
     }
 
+    public void getSpotz(ResponseListenerAdapter<SpotzGetResponse[]> listener) {
+        new SpotzListingsTask(listener).execute();
+    }
+
     private synchronized SharedPreferences getSharedPreferences(Context context) {
         if (sharedPreferences == null) {
             sharedPreferences = new ObscuredSharedPreferences(context, context.getSharedPreferences(Spotz.class.getName(),
@@ -147,8 +155,8 @@ public class Spotz {
         storeDeviceId(context, null);
     }
 
-    public void startScanningBeacons(Context context) {
-        scanForBeacons(context);
+    public void startScanningBeacons(Context context, String[] uuids) {
+        scanForBeacons(context, uuids);
     }
 
     public void stopScanningBeacons(Context context) {
@@ -234,12 +242,24 @@ public class Spotz {
     /**
      * Start scanning for beacons. Only if the user has allowed, and that we are on Android SDK 18+.
      * @param context
+     * @param uuids - uuids to scan for
      */
-    private void scanForBeacons(Context context) {
+    private void scanForBeacons(Context context, String[] uuids) {
         if (Build.VERSION.SDK_INT >= 18) {
             // Only scan for the UUIDs configured for their application
-            BleManager.getInstance().uuids(context)
-                    .startScanning(context, BleManager.ScanMode.SMART);
+            BleManager.getInstance().uuids(context, uuids)
+                    /*.scan(context, new BleManager.OnBleScanResultListener() {
+                        @Override
+                        public void onScanFound(BleData bleData) {
+                            Log.d("TAG", "onScanFound");
+                        }
+
+                        @Override
+                        public void onScanFinish(Set<BleData> bleDatas) {
+                            Log.d("TAG", "onScanFinish");
+                        }
+                    });*/
+                    .startScanning(context, BleManager.SCAN_MODE_EAGER);
         }
     }
 

@@ -10,6 +10,7 @@
     tools:context="com.localz.spotz.app.activities.LaunchActivity">
 
     <TextView
+        android:id="@+id/acitivity_launch_vicinity_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/activity_launch_message_not_in_vicinity"
