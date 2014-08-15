@@ -8,9 +8,11 @@ public class LocalzApi {
     private String appId;
     private String sid;
     private String secret;
-    //private final String host = "http://api.localz.co/spotz-dev/v1";
+
+    private String channelId;
+    private final String host = "http://dev-spotz-api.herokuapp.com";
     //private final String host = "https://dev-api-homepass-com.herokuapp.com";
-    private final String host = "http://10.0.1.36:3000";
+    //private final String host = "http://10.0.1.36:3000";
     //private final String host = "http://192.168.1.11:3000";
 
     private LocalzApi() {
@@ -24,11 +26,12 @@ public class LocalzApi {
         return SingletonHolder.INSTANCE;
     }
 
-    public void init(String deviceId, String sid, String appId, String secret) {
+    public void init(String deviceId, String sid, String appId, String secret, String channelId) {
         this.deviceId = deviceId;
         this.sid = sid;
         this.appId = appId;
         this.secret = secret;
+        this.channelId = channelId;
     }
 
     public void setDeviceId(String deviceId) {
@@ -51,6 +54,10 @@ public class LocalzApi {
         return appId;
     }
 
+    public String getChannelId() {
+        return channelId;
+    }
+
     String getSecret() {
         return secret;
     }
@@ -58,5 +65,6 @@ public class LocalzApi {
     String getHost() {
         return host;
     }
+
 }
 

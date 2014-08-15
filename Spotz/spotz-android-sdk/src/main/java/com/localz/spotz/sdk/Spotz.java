@@ -35,6 +35,7 @@ import com.localz.spotz.sdk.models.InitializedResponse;
 import com.localz.proximity.ble.BleManager;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -71,8 +72,9 @@ public class Spotz {
 
         final String deviceId = getSharedPreferences(context).getString("deviceId", null);
         final String sid = getSharedPreferences(context).getString("sid", null);
+        final String channelId = "Android";
 
-        LocalzApi.getInstance().init(deviceId, sid, appId, secret);
+        LocalzApi.getInstance().init(deviceId, sid, appId, secret, channelId);
 
         // TODO uncomment when we need GCM
         //if (checkPlayServices(context)) {
@@ -155,7 +157,7 @@ public class Spotz {
         storeDeviceId(context, null);
     }
 
-    public void startScanningBeacons(Context context, String[] uuids) {
+    public void startScanningBeacons(Context context, List<String> uuids) {
         scanForBeacons(context, uuids);
     }
 
@@ -244,10 +246,10 @@ public class Spotz {
      * @param context
      * @param uuids - uuids to scan for
      */
-    private void scanForBeacons(Context context, String[] uuids) {
+    private void scanForBeacons(Context context, List<String> uuids) {
         if (Build.VERSION.SDK_INT >= 18) {
             // Only scan for the UUIDs configured for their application
-            BleManager.getInstance().uuids(context, uuids)
+            BleManager.getInstance().uuids(context, uuids.toArray(new String[uuids.size()]))
                     /*.scan(context, new BleManager.OnBleScanResultListener() {
                         @Override
                         public void onScanFound(BleData bleData) {
@@ -259,7 +261,7 @@ public class Spotz {
                             Log.d("TAG", "onScanFinish");
                         }
                     });*/
-                    .startScanning(context, BleManager.SCAN_MODE_EAGER);
+                    .startScanning(context, 15000, 8000);
         }
     }
 

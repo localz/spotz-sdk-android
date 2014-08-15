@@ -31,6 +31,7 @@ public abstract class ApiMethod<T, V> {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
     private final String appId = LocalzApi.getInstance().getAppId();
     private final String secret = LocalzApi.getInstance().getSecret();
+    private final String channelId = LocalzApi.getInstance().getChannelId();
     private static final String host = "api.localz.co";
 
     protected static final String hostUrl = LocalzApi.getInstance().getHost();
@@ -138,6 +139,7 @@ public abstract class ApiMethod<T, V> {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAuthorization(dateString + "," + signature);
         httpHeaders.set("x-localz-appid", appId);
+        httpHeaders.set("x-localz-chanid", channelId);
         if (deviceId != null) {
             httpHeaders.set("x-localz-deviceid", deviceId);
         }

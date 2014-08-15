@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#E0E0E0"
+    android:background="#7f8c8d"
     tools:context="com.localz.spotz.app.activities.LaunchActivity">
 
     <TextView
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="@string/activity_launch_message_not_in_vicinity"
         android:textSize="36sp"
-        android:textColor="#FFFF33"
+        android:textColor="#f1c40f"
         android:layout_centerInParent="true"/>
 
 
@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="www.localz.co"
+            android:textColor="#FFFFFF"
             android:gravity="center_horizontal"/>
 
 
