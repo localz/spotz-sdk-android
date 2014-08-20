@@ -3,9 +3,9 @@
     package="com.localz.spotz.app">
 
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +15,6 @@
 
         <activity
             android:name="com.localz.spotz.app.activities.LaunchActivity"
-            android:label="@string/title_activity_launch"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,23 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <!-- These services must be defined in your app to enable background scanning -->
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat"/>
 
-        <!-- Optional. Define this if you want to receive callbacks from background scans.
-                    The intent filter action is <your package>.LOCALZ_BLE_SCAN_FOUND so that it stays
-                    unique to your app. -->
-        <receiver android:name=".activities.LaunchActivity$OnBeaconDiscoveredBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="com.localz.spotz.app.LOCALZ_BLE_SCAN_FOUND" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".activities.LaunchActivity$OnBeaconDiscoveryFinishedBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="com.localz.spotz.app.LOCALZ_BLE_SCAN_FINISH" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

@@ -8,133 +8,157 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.localz.proximity.ble.BleData;
 import com.localz.proximity.ble.BleManager;
-import com.localz.spotz.api.models.Response;
-import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 import com.localz.spotz.app.R;
+import com.localz.spotz.app.widgets.CustomAnimation;
 import com.localz.spotz.sdk.Spotz;
 import com.localz.spotz.sdk.listeners.InitializationListenerAdapter;
-import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
-import com.localz.spotz.sdk.models.InitializedResponse;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 public class LaunchActivity extends Activity {
+    public static final String TAG = LaunchActivity.class.getSimpleName();
 
-    public static final String TAG = "LaunchActivity";
-    private BluetoothAdapter mBluetoothAdapter;
-
-    // Need to initialise with Localz Spotz server only once, hence
-    // this flag is set to true once it is initialised.
-    private boolean isInitialised;
-
-    private BroadcastReceiver noBeaconsFoundMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Discovered noBeaconsFoundMessageReceiver");
-            setNotInVicinity();
-        }
-    };
-
-    private BroadcastReceiver someBeaconsFoundMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Discovered someBeaconsFoundMessageReceiver");
-            setInVicinity();
-        }
-    };
+    private OnBeaconDiscoveredBroadcastReceiver beaconDiscoveredBroadcastReceiver;
+    private OnBeaconDiscoveryFinishedBroadcastReceiver beaconDiscoveryFinishedBroadcastReceiver;
+    private boolean isInVicinity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
+        // Register BLE scan receivers
+        beaconDiscoveredBroadcastReceiver = new OnBeaconDiscoveredBroadcastReceiver();
+        beaconDiscoveryFinishedBroadcastReceiver = new OnBeaconDiscoveryFinishedBroadcastReceiver();
+        registerReceiver(beaconDiscoveredBroadcastReceiver,
+                new IntentFilter("com.localz.spotz.app.LOCALZ_BLE_SCAN_FOUND"));
+        registerReceiver(beaconDiscoveryFinishedBroadcastReceiver,
+                new IntentFilter("com.localz.spotz.app.LOCALZ_BLE_SCAN_FINISH"));
 
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            createDialogNoBluetoothHardware();
+        // Check if device has bluetooth
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            // We just show a toast for this test app for informational purposes
+            Toast.makeText(this, "Bluetooth not found on your device. You won't be able to use any bluetooth features",
+                    Toast.LENGTH_SHORT).show();
         }
+        else {
+            // For this example app, let's try to ensure bluetooth is switched on
+            if (bluetoothAdapter.isEnabled()) {
+                initialiseSpotz();
+            }
+            else {
+                showBluetoothNotEnabledDialog();
+            }
+        }
+    }
+
+    private void initialiseSpotz() {
+        // Let's initialize the spotz sdk so we can start receiving callbacks for any spotz we find!
+        Spotz.getInstance().initialize(this,
+                "1234567890123456789012345678901234567890", // Your api key goes here
+                "A234567890123456789012345678901234567890", // Your secret key goes here
+                new InitializationListenerAdapter() {
+                    @Override
+                    public void onInitialized() {
+                        setNotInVicinity();
+                        CustomAnimation.startWaveAnimation(findViewById(R.id.wave));
+                    }
+
+                    @Override
+                    public void onError(Exception exception) {
+                        Log.e(TAG, "Exception while registering device ");
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                createErrorDialogInitialising();
+                            }
+                        });
+                    }
+                }
+        );
     }
 
     @Override
-    protected void onResume() {
-        if(checkIfBluetoothEnabled()) {
-            initialiseLocalzSpotz();
-        }
-        super.onResume();
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // If this activity is destroyed we want to stop scanning for beacons
+        Spotz.getInstance().stopScanningBeacons(this);
+        unregisterReceiver(beaconDiscoveredBroadcastReceiver);
+        unregisterReceiver(beaconDiscoveryFinishedBroadcastReceiver);
     }
 
-    private boolean checkIfBluetoothEnabled() {
-        if (!mBluetoothAdapter.isEnabled()) {
-            // Bluetooth not enabled
-            createDialogBluetoothNotEnabled();
-            return false;
-        }
+    public class OnBeaconDiscoveredBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BleData bleData = (BleData) intent.getSerializableExtra(BleManager.EXTRA_BLE_DATA);
 
-        return true;
+            setInVicinity();
+
+            Log.d(TAG, "Discovered " + bleData.uuid + " major:" + bleData.major + " minor:" + bleData.minor);
+        }
     }
 
-    private void initialiseLocalzSpotz() {
-        if (!isInitialised) {
-            final ProgressBar progressBar = (ProgressBar) findViewById(R.id.activity_launch_progress_bar_id);
-            Spotz.getInstance().initialize(this, "1234567890123456789012345678901234567890", "A234567890123456789012345678901234567890", new InitializationListenerAdapter() {
-                @Override
-                public void onInitialized(InitializedResponse initializedResponse) {
-                    super.onInitialized(initializedResponse);
-                    Spotz.getInstance().getSpotz(new ResponseListenerAdapter<SpotzGetResponse[]>() {
-                        @Override
-                        public void onSuccess(Response<SpotzGetResponse[]> response) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            LocalBroadcastManager.getInstance(LaunchActivity.this).registerReceiver(noBeaconsFoundMessageReceiver,
-                                    new IntentFilter("noBeaconsFound"));
+    public class OnBeaconDiscoveryFinishedBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ArrayList<BleData> bleDatas = (ArrayList<BleData>) intent.getSerializableExtra(BleManager.EXTRA_BLE_DATA);
 
-                            LocalBroadcastManager.getInstance(LaunchActivity.this).registerReceiver(someBeaconsFoundMessageReceiver,
-                                    new IntentFilter("someBeaconsFound"));
-                            List<String> uuids = new ArrayList<String>();
-                            if((response.data != null) && (response.data.length > 0)) {
-                                for (SpotzGetResponse spotz : response.data) {
-                                    uuids.add(spotz.uuid);
-                                }
-                                Spotz.getInstance().startScanningBeacons(LaunchActivity.this, uuids);
-                                // all done, set isInitialised to true, so never try to initialise again
-                                isInitialised = true;
-                            } else {
-                                createErrorDialogNoSpotzRegistered();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Response<SpotzGetResponse[]> response, Exception exception) {
-                            super.onError(response, exception);
-                            createErrorDialogNoSpotzRegistered();
-                        }
-                    });
+            if (bleDatas.size() > 0) {
+                for (BleData bleData : bleDatas) {
+                    Log.d(TAG, "Discovered " + bleData.uuid + " major:" + bleData.major + " minor:" + bleData.minor);
                 }
 
-                @Override
-                public void onError(Exception exception) {
-                    super.onError(exception);
-                    Log.e(TAG, "Exception while registering device ");
-                    createErrorDialogInitialising();
-                }
-            });
+                setInVicinity();
+            }
+            else {
+                Log.d(TAG, "Discovered no devices");
+
+                setNotInVicinity();
+            }
         }
     }
 
+    private void setInVicinity() {
+        TextView vicinityText = (TextView) findViewById(R.id.activity_launch_vicinity_text);
+        vicinityText.setText(R.string.activity_launch_message_in_vicinity);
 
-    private void createDialogBluetoothNotEnabled() {
+        if (!isInVicinity) {
+            TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
+            transition.resetTransition();
+            transition.startTransition(400);
+        }
+
+        isInVicinity = true;
+    }
+
+    private void setNotInVicinity() {
+        TextView vicinityText = (TextView) findViewById(R.id.activity_launch_vicinity_text);
+        vicinityText.setText(R.string.activity_launch_message_not_in_vicinity);
+
+        if (isInVicinity) {
+            TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
+            transition.resetTransition();
+            transition.reverseTransition(400);
+        }
+
+        isInVicinity = false;
+    }
+
+    private void showBluetoothNotEnabledDialog() {
         new AlertDialog.Builder(this).setTitle("Bluetooth not enabled")
-                .setMessage("This application require bluetooth to be enabled.")
+                .setMessage("This application requires bluetooth to be enabled.")
+                .setCancelable(false)
                 .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -144,61 +168,18 @@ public class LaunchActivity extends Activity {
                         dialogInterface.dismiss();
                     }
                 }).setNegativeButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                finish();
-            }
-        }).show();
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        finish();
+                    }
+                }
+        ).show();
     }
-
 
     private void createErrorDialogInitialising() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new AlertDialog.Builder(LaunchActivity.this).setTitle("Error")
-                            .setMessage("Unable to initialise application. Please check that you have network connectivity and try again. If problem persist, contact Localz.")
-                            .setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                    finish();
-                                }
-                            }).show();
-                } catch (Exception e) {
-                    Log.d(TAG, "Activity probably exited: " + e.getMessage());
-                }
-            }
-        });
-    }
-
-    private void createErrorDialogNoSpotzRegistered() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new AlertDialog.Builder(LaunchActivity.this).setTitle("Error")
-                            .setMessage("Unfortunately your application, does not have any spotz registered, please register spotz, before continue.")
-                            .setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                    finish();
-                                }
-                            }).show();
-                } catch (Exception e) {
-                    Log.d(TAG, "Activity probably exited: " + e.getMessage());
-                }
-            }
-        });
-    }
-
-
-    private void createDialogNoBluetoothHardware() {
-        new AlertDialog.Builder(this).setTitle("Device does not support Bluetooth")
-                .setMessage("Unfortunately, this device does not support bluetooth")
+        new AlertDialog.Builder(LaunchActivity.this).setTitle("Error")
+                .setMessage("Unable to initialize application. Please check that you have network connectivity and try again. If the problem persists, contact Localz.")
                 .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -206,55 +187,5 @@ public class LaunchActivity extends Activity {
                         finish();
                     }
                 }).show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Spotz.getInstance().stopScanningBeacons(this);
-        super.onDestroy();
-    }
-
-    private void setInVicinity() {
-        TextView vicinityText = (TextView) findViewById(R.id.acitivity_launch_vicinity_text);
-        vicinityText.setText(R.string.activity_launch_message_in_vicinity);
-    }
-
-    private void setNotInVicinity() {
-        TextView vicinityText = (TextView) findViewById(R.id.acitivity_launch_vicinity_text);
-        vicinityText.setText(R.string.activity_launch_message_not_in_vicinity);
-    }
-
-
-    public static class OnBeaconDiscoveredBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            BleData bleData = (BleData) intent.getSerializableExtra(BleManager.EXTRA_BLE_DATA);
-
-            Intent intentToBeSent = new Intent("someBeaconsFound");
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intentToBeSent);
-
-            Log.d(TAG, "Discovered Beacon !!!!!!!!!!!" + "Scan found " + bleData.uuid + " major:" + bleData.major + " minor:" + bleData.minor);
-        }
-    }
-
-    public static class OnBeaconDiscoveryFinishedBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ArrayList<BleData> bleDatas = (ArrayList<BleData>) intent.getSerializableExtra(BleManager.EXTRA_BLE_DATA);
-
-
-            if (bleDatas.size() > 0) {
-                for (BleData bleData : bleDatas) {
-                    Log.d(TAG, "Discovered Beacon &&&&&&&&&" + "Scan found " + bleData.uuid + " major:" + bleData.major + " minor:" + bleData.minor);
-                }
-                Intent intentToBeSent = new Intent("someBeaconsFound");
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intentToBeSent);
-            } else {
-                Intent intentToBeSent = new Intent("noBeaconsFound");
-                LocalBroadcastManager.getInstance(context).sendBroadcast(intentToBeSent);
-            }
-        }
     }
 }
