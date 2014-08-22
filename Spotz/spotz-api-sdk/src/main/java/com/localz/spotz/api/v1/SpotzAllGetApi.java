@@ -6,7 +6,6 @@ import com.google.api.client.http.HttpResponse;
 import com.localz.spotz.api.ApiMethod;
 import com.localz.spotz.api.exceptions.LocalzApiException;
 import com.localz.spotz.api.models.Response;
-import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
 import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 
 import java.io.IOException;
@@ -14,21 +13,20 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-public class SpotzGetApi extends ApiMethod<SpotzGetRequest, SpotzGetResponse> {
+public class SpotzAllGetApi extends ApiMethod<Void, SpotzGetResponse[]> {
 
-    private static final String PATH = "/spotz/{spotzId}";
+    private static final String PATH = "/spotz";
 
     @Override
-    public Response<SpotzGetResponse> execute(SpotzGetRequest spotzId) throws LocalzApiException {
+    public Response<SpotzGetResponse[]> execute() throws LocalzApiException {
         try {
-            String path = PATH.replace("{spotzId}", spotzId.spotzId);
 
             HttpResponse httpResponse = httpRequestFactory.buildGetRequest(
-                    new GenericUrl(hostUrl + path))
-                    .setHeaders(createDeviceSignedHeaders(new Date(), HttpMethods.GET, path))
+                    new GenericUrl(hostUrl + PATH))
+                    .setHeaders(createAuthSignedHeaders(new Date(), HttpMethods.GET, PATH))
                     .execute();
 
-            return response(httpResponse, SpotzGetResponse.TYPE);
+            return response(httpResponse, SpotzGetResponse.TYPE_ARRAY);
 
         } catch (IOException e) {
             throw new LocalzApiException("Exception while executing API request: " + SpotzGetApi.class.getSimpleName(), e);

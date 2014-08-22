@@ -44,8 +44,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/localz_logo" />
 
-        <TextView
-            android:textSize="18sp"
+        <com.localz.spotz.app.widgets.CustomFontTextView
+            android:textSize="13sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="www.localz.co"

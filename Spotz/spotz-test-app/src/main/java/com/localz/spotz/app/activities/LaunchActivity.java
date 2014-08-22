@@ -14,20 +14,17 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.localz.proximity.ble.BleData;
-import com.localz.proximity.ble.BleManager;
+import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 import com.localz.spotz.app.R;
 import com.localz.spotz.app.widgets.CustomAnimation;
 import com.localz.spotz.sdk.Spotz;
 import com.localz.spotz.sdk.listeners.InitializationListenerAdapter;
 
-import java.util.ArrayList;
-
 public class LaunchActivity extends Activity {
     public static final String TAG = LaunchActivity.class.getSimpleName();
 
-    private OnBeaconDiscoveredBroadcastReceiver beaconDiscoveredBroadcastReceiver;
-    private OnBeaconDiscoveryFinishedBroadcastReceiver beaconDiscoveryFinishedBroadcastReceiver;
+    private OnEnteredSpotBroadcastReceiver enteredSpotBroadcastReceiver;
+    private OnExitedSpotReceiver exitedSpotBroadcastReceiver;
     private boolean isInVicinity = false;
 
     @Override
@@ -36,12 +33,12 @@ public class LaunchActivity extends Activity {
         setContentView(R.layout.activity_launch);
 
         // Register BLE scan receivers
-        beaconDiscoveredBroadcastReceiver = new OnBeaconDiscoveredBroadcastReceiver();
-        beaconDiscoveryFinishedBroadcastReceiver = new OnBeaconDiscoveryFinishedBroadcastReceiver();
-        registerReceiver(beaconDiscoveredBroadcastReceiver,
-                new IntentFilter("com.localz.spotz.app.LOCALZ_BLE_SCAN_FOUND"));
-        registerReceiver(beaconDiscoveryFinishedBroadcastReceiver,
-                new IntentFilter("com.localz.spotz.app.LOCALZ_BLE_SCAN_FINISH"));
+        enteredSpotBroadcastReceiver = new OnEnteredSpotBroadcastReceiver();
+        exitedSpotBroadcastReceiver = new OnExitedSpotReceiver();
+        registerReceiver(enteredSpotBroadcastReceiver,
+                new IntentFilter("com.localz.spotz.app.SPOTZ_ON_SPOT_ENTER"));
+        registerReceiver(exitedSpotBroadcastReceiver,
+                new IntentFilter("com.localz.spotz.app.SPOTZ_ON_SPOT_EXIT"));
 
         // Check if device has bluetooth
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -69,7 +66,11 @@ public class LaunchActivity extends Activity {
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
+                        // Start scanning for spotz now that we're initialized
+                        Spotz.getInstance().startScanningForSpotz(LaunchActivity.this, Spotz.ScanMode.EAGER);
+
                         setNotInVicinity();
+
                         CustomAnimation.startWaveAnimation(findViewById(R.id.wave));
                     }
 
@@ -94,38 +95,29 @@ public class LaunchActivity extends Activity {
 
         // If this activity is destroyed we want to stop scanning for beacons
         Spotz.getInstance().stopScanningBeacons(this);
-        unregisterReceiver(beaconDiscoveredBroadcastReceiver);
-        unregisterReceiver(beaconDiscoveryFinishedBroadcastReceiver);
+        unregisterReceiver(exitedSpotBroadcastReceiver);
+        unregisterReceiver(enteredSpotBroadcastReceiver);
     }
 
-    public class OnBeaconDiscoveredBroadcastReceiver extends BroadcastReceiver {
+    public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            BleData bleData = (BleData) intent.getSerializableExtra(BleManager.EXTRA_BLE_DATA);
+            SpotzGetResponse spotzGetResponse = (SpotzGetResponse) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
+
+            Toast.makeText(context, "Entered the " + spotzGetResponse.name + " spot", Toast.LENGTH_SHORT).show();
 
             setInVicinity();
-
-            Log.d(TAG, "Discovered " + bleData.uuid + " major:" + bleData.major + " minor:" + bleData.minor);
         }
     }
 
-    public class OnBeaconDiscoveryFinishedBroadcastReceiver extends BroadcastReceiver {
+    public class OnExitedSpotReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ArrayList<BleData> bleDatas = (ArrayList<BleData>) intent.getSerializableExtra(BleManager.EXTRA_BLE_DATA);
+            SpotzGetResponse spotzGetResponse = (SpotzGetResponse) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
 
-            if (bleDatas.size() > 0) {
-                for (BleData bleData : bleDatas) {
-                    Log.d(TAG, "Discovered " + bleData.uuid + " major:" + bleData.major + " minor:" + bleData.minor);
-                }
+            Toast.makeText(context, "Exited the " + spotzGetResponse.name + " spot", Toast.LENGTH_SHORT).show();
 
-                setInVicinity();
-            }
-            else {
-                Log.d(TAG, "Discovered no devices");
-
-                setNotInVicinity();
-            }
+            setNotInVicinity();
         }
     }
 

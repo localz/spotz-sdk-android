@@ -6,32 +6,30 @@ import com.google.api.client.http.HttpResponse;
 import com.localz.spotz.api.ApiMethod;
 import com.localz.spotz.api.exceptions.LocalzApiException;
 import com.localz.spotz.api.models.Response;
-import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
-import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
+import com.localz.spotz.api.models.response.v1.BeaconsGetResponse;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-public class SpotzGetApi extends ApiMethod<SpotzGetRequest, SpotzGetResponse> {
+public class BeaconsGetApi extends ApiMethod<Void, BeaconsGetResponse[]> {
 
-    private static final String PATH = "/spotz/{spotzId}";
+    private static final String PATH = "/applications/beacons";
 
     @Override
-    public Response<SpotzGetResponse> execute(SpotzGetRequest spotzId) throws LocalzApiException {
+    public Response<BeaconsGetResponse[]> execute() throws LocalzApiException {
         try {
-            String path = PATH.replace("{spotzId}", spotzId.spotzId);
 
             HttpResponse httpResponse = httpRequestFactory.buildGetRequest(
-                    new GenericUrl(hostUrl + path))
-                    .setHeaders(createDeviceSignedHeaders(new Date(), HttpMethods.GET, path))
+                    new GenericUrl(hostUrl + PATH))
+                    .setHeaders(createDeviceSignedHeaders(new Date(), HttpMethods.GET, PATH))
                     .execute();
 
-            return response(httpResponse, SpotzGetResponse.TYPE);
+            return response(httpResponse, BeaconsGetResponse.TYPE);
 
         } catch (IOException e) {
-            throw new LocalzApiException("Exception while executing API request: " + SpotzGetApi.class.getSimpleName(), e);
+            throw new LocalzApiException("Exception while executing API request: " + BeaconsGetApi.class.getSimpleName(), e);
         } catch (NoSuchAlgorithmException e) {
             throw new LocalzApiException("Exception while creating signature: ", e);
         } catch (InvalidKeyException e) {

@@ -36,7 +36,6 @@ uploadArchives {
 }
 
 dependencies {
-    compile "com.google.android.gms:play-services:4.+"
     compile 'com.localz.proximity.ble:ble-sdk-android:1.0.0@aar'
     compile project(':spotz-api-sdk')
     compile fileTree(dir: 'libs', include: ['*.jar'])
