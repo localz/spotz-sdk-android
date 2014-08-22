@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class BeaconsGetApi extends ApiMethod<Void, BeaconsGetResponse[]> {
 
-    private static final String PATH = "/applications/beacons";
+    private static final String PATH = "/beacons";
 
     @Override
     public Response<BeaconsGetResponse[]> execute() throws LocalzApiException {
