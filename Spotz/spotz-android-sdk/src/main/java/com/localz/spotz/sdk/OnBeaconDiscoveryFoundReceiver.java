@@ -8,13 +8,18 @@ import android.util.Log;
 
 import com.localz.proximity.ble.BleData;
 import com.localz.proximity.ble.BleManager;
+import com.localz.spotz.api.models.ActivityType;
 import com.localz.spotz.api.models.Response;
+import com.localz.spotz.api.models.request.v1.ActivityReportPostRequest;
 import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
+import com.localz.spotz.api.models.response.v1.ActivityReportPostResponse;
 import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
+import com.localz.spotz.sdk.api.ActivityReportTask;
 import com.localz.spotz.sdk.api.GetSpotzTask;
 import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
 import com.localz.spotz.sdk.models.Spot;
 
+import java.util.Date;
 import java.util.Map;
 
 /**

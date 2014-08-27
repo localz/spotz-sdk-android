@@ -81,7 +81,7 @@ public abstract class ApiMethod<T, V> {
     }
 
     protected Response<V> response(HttpResponse httpResponse, Type type) throws IOException, LocalzApiException {
-        Response<V> response;
+        Response<V> response = null;
 
         if (httpResponse.getContent() != null) {
             try {
@@ -93,7 +93,8 @@ public abstract class ApiMethod<T, V> {
                         + (scanner.hasNext() ? scanner.next() : ""), e);
             }
         }
-        else {
+
+        if (response == null) {
             response = new Response<V>();
         }
 
