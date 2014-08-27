@@ -14,11 +14,11 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 import com.localz.spotz.app.R;
 import com.localz.spotz.app.widgets.CustomAnimation;
 import com.localz.spotz.sdk.Spotz;
 import com.localz.spotz.sdk.listeners.InitializationListenerAdapter;
+import com.localz.spotz.sdk.models.Spot;
 
 public class LaunchActivity extends Activity {
     public static final String TAG = LaunchActivity.class.getSimpleName();
@@ -102,9 +102,9 @@ public class LaunchActivity extends Activity {
     public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SpotzGetResponse spotzGetResponse = (SpotzGetResponse) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
+            Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
 
-            Toast.makeText(context, "Entered the " + spotzGetResponse.name + " spot", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Entered the " + spot.name + " spot", Toast.LENGTH_SHORT).show();
 
             setInVicinity();
         }
@@ -113,9 +113,9 @@ public class LaunchActivity extends Activity {
     public class OnExitedSpotReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SpotzGetResponse spotzGetResponse = (SpotzGetResponse) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
+            Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
 
-            Toast.makeText(context, "Exited the " + spotzGetResponse.name + " spot", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Exited the " + spot.name + " spot", Toast.LENGTH_SHORT).show();
 
             setNotInVicinity();
         }
