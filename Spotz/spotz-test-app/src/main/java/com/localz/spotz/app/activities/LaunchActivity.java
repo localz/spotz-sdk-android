@@ -61,8 +61,8 @@ public class LaunchActivity extends Activity {
     private void initialiseSpotz() {
         // Let's initialize the spotz sdk so we can start receiving callbacks for any spotz we find!
         Spotz.getInstance().initialize(this,
-                "1234567890123456789012345678901234567890", // Your api key goes here
-                "A234567890123456789012345678901234567890", // Your secret key goes here
+                "1234567890123456789012345678901234567890", // Your application ID goes here
+                "A234567890123456789012345678901234567890", // Your client key goes here
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
