@@ -1,5 +1,10 @@
 package com.localz.spotz.api;
 
+import com.google.api.client.http.HttpTransport;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class LocalzApi {
 
     private static final String TAG = LocalzApi.class.getSimpleName();
@@ -16,6 +21,7 @@ public class LocalzApi {
     //private final String host = "http://192.168.1.11:3000";
 
     private LocalzApi() {
+        Logger.getLogger(HttpTransport.class.getName()).setLevel(Level.ALL);
     }
 
     private static class SingletonHolder {
