@@ -13,6 +13,7 @@ import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
 import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 import com.localz.spotz.sdk.api.GetSpotzTask;
 import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
+import com.localz.spotz.sdk.models.Spot;
 
 import java.util.Map;
 
@@ -44,8 +45,8 @@ public class OnBeaconDiscoveryFoundReceiver extends BroadcastReceiver {
                 new GetSpotzTask(new ResponseListenerAdapter<SpotzGetResponse>() {
                     @Override
                     public void onSuccess(Response<SpotzGetResponse> response) {
-                        Spotz.getInstance().getCachedSpotzMap().put(spotzId, response.data);
-                        Spotz.getInstance().getCachedSpotzIdMap().put(bleData, spotzId);
+                        Spotz.getInstance().getCachedSpotzMap().put(response.data._id, response.data);
+                        Spotz.getInstance().getCachedSpotzIdMap().put(bleData, response.data._id);
                         inSpot(context, response.data);
                     }
                 }).execute(request);
@@ -86,7 +87,7 @@ public class OnBeaconDiscoveryFoundReceiver extends BroadcastReceiver {
         sharedPreferences.edit().putBoolean(spotzGetResponse._id, true).apply();
 
         Intent broadcastIntent = new Intent(context.getPackageName() + BROADCAST);
-        broadcastIntent.putExtra(Spotz.EXTRA_SPOTZ, spotzGetResponse);
+        broadcastIntent.putExtra(Spotz.EXTRA_SPOTZ, Spot.clone(spotzGetResponse));
         context.sendBroadcast(broadcastIntent);
     }
 

@@ -14,6 +14,7 @@ import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
 import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 import com.localz.spotz.sdk.api.GetSpotzTask;
 import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
+import com.localz.spotz.sdk.models.Spot;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -86,7 +87,7 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
         sharedPreferences.edit().putBoolean(spotzGetResponse._id, false).apply();
 
         Intent broadcastIntent = new Intent(context.getPackageName() + BROADCAST);
-        broadcastIntent.putExtra(Spotz.EXTRA_SPOTZ, spotzGetResponse);
+        broadcastIntent.putExtra(Spotz.EXTRA_SPOTZ, Spot.clone(spotzGetResponse));
         context.sendBroadcast(broadcastIntent);
     }
 }

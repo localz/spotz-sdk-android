@@ -19,20 +19,16 @@ public class SpotzGetResponse implements Serializable {
     public String tag;
     public Beacon[] beacons;
     public Location loc;
-    public int radius;
+    public Integer radius;
     public Metadata[] metadata;
     public String appId;
-
+    public Boolean deleted;
 
     public static class Beacon implements Serializable {
-        public int[] xy;
-        public int radius;
-        public String serial;
-        public String vendor;
-        public String vendorId;
+        public String beaconId;
         public String uuid;
-        public String major;
-        public String minor;
+        public Integer major;
+        public Integer minor;
     }
 
     public static class Location implements Serializable {
