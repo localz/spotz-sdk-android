@@ -51,7 +51,6 @@
             android:text="www.localz.co"
             android:textColor="#FFFFFF"
             android:gravity="center_horizontal"/>
-            android:layout_centerHorizontal="true" />
     </LinearLayout>
 
 </RelativeLayout>
