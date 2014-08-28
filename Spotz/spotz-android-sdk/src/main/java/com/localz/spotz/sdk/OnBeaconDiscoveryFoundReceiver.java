@@ -8,13 +8,17 @@ import android.util.Log;
 
 import com.localz.proximity.ble.BleData;
 import com.localz.proximity.ble.BleManager;
+import com.localz.spotz.api.models.ActivityType;
 import com.localz.spotz.api.models.Response;
+import com.localz.spotz.api.models.request.v1.ActivityReportPostRequest;
 import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
 import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
+import com.localz.spotz.sdk.api.ActivityReportTask;
 import com.localz.spotz.sdk.api.GetSpotzTask;
 import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
 import com.localz.spotz.sdk.models.Spot;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -50,12 +54,12 @@ public class OnBeaconDiscoveryFoundReceiver extends BroadcastReceiver {
                         public void onSuccess(Response<SpotzGetResponse> response) {
                             Spotz.getInstance().getCachedSpotzIdToSpotzMap().put(spotzId, response.data);
 
-                            inSpot(context, response.data);
+                            inSpot(context, response.data, bleData);
                         }
                     }).execute(request);
                 }
                 else {
-                    inSpot(context, spot);
+                    inSpot(context, spot, bleData);
                 }
             }
         }
@@ -69,8 +73,14 @@ public class OnBeaconDiscoveryFoundReceiver extends BroadcastReceiver {
         return sharedPreferences.getBoolean(spotId, false);
     }
 
-    private void inSpot(Context context, SpotzGetResponse spotzGetResponse) {
+    private void inSpot(Context context, SpotzGetResponse spotzGetResponse, BleData bleData) {
         sharedPreferences.edit().putBoolean(spotzGetResponse._id, true).apply();
+
+        String beaconId = Spotz.getInstance().getCachedBeaconIdMap().get(bleData);
+
+        ActivityReportPostRequest request = new ActivityReportPostRequest(new Date(), ActivityType.SPOTZ_ENTER.getName(),
+                beaconId, spotzGetResponse._id);
+        new ActivityReportTask().execute(request);
 
         Intent broadcastIntent = new Intent(context.getPackageName() + BROADCAST);
         broadcastIntent.putExtra(Spotz.EXTRA_SPOTZ, Spot.clone(spotzGetResponse));
