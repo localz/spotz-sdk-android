@@ -13,6 +13,7 @@ import com.localz.spotz.api.models.ActivityType;
 import com.localz.spotz.api.models.Response;
 import com.localz.spotz.api.models.request.v1.ActivityReportPostRequest;
 import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
+import com.localz.spotz.api.models.response.v1.ActivityReportPostResponse;
 import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
 import com.localz.spotz.sdk.api.ActivityReportTask;
 import com.localz.spotz.sdk.api.GetSpotzTask;
@@ -61,6 +62,8 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
         // Beacons that we have found during this scan
         Set<String> currentScanVisibleBeacons = new HashSet<String>();
 
+        final ActivityReportPostRequest activityReportRequest = new ActivityReportPostRequest();
+
         final Map<BleData, String> cachedSpotzIdMap = Spotz.getInstance().getCachedSpotzIdMap();
         final Map<String, SpotzGetResponse> cachedSpotzMap = Spotz.getInstance().getCachedSpotzIdToSpotzMap();
         for (BleData bleData : bleDatas) {
@@ -75,9 +78,8 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
                     if (b.uuid.equalsIgnoreCase(bleData.uuid) && b.major == bleData.major && b.minor == bleData.minor
                             && !previousScanVisibleBeacons.contains(b.beaconId)) {
                         // b is the beacon that we see now, get b.beaconId and send it to server's activity log
-                        ActivityReportPostRequest request = new ActivityReportPostRequest(new Date(), ActivityType.BEACON_ENTER.getName(),
-                                b.beaconId, spotzId);
-                        new ActivityReportTask().execute(request);
+                        activityReportRequest.addRecord(new Date(), ActivityType.BEACON_ENTER.getName(),
+                                b.beaconId, null);
 
                         currentScanVisibleBeacons.add(b.beaconId);
                         break;
@@ -99,19 +101,41 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
                     public void onSuccess(Response<SpotzGetResponse> response) {
                         cachedSpotzMap.put(exitedSpotzId, response.data);
 
-                        outSpot(context, response.data);
+                        outSpot(context, response.data, activityReportRequest);
+
+                        // this is special call as it is result of async call, hence can not
+                        // use normal activity logging. Create separate request and send it.
+                        final ActivityReportPostRequest asyncActivityReportRequest = new ActivityReportPostRequest();
+                        asyncActivityReportRequest.addRecord(new Date(), ActivityType.BEACON_EXIT.getName(),
+                                null, response.data._id);
+                        new ActivityReportTask(new ResponseListenerAdapter<ActivityReportPostResponse>() {
+                            @Override
+                            public void onSuccess(Response<ActivityReportPostResponse> response) {
+                                super.onSuccess(response);
+                                // do nothing
+                            }
+                        }).execute(asyncActivityReportRequest);
                     }
                 }).execute(request);
             } else {
-                outSpot(context, spot);
+                outSpot(context, spot, activityReportRequest);
             }
         }
 
         // Anything remaining in previousScanVisibleBeacons we have exited!
         for (String exitedBeaconId : previousScanVisibleBeacons) {
-            ActivityReportPostRequest request = new ActivityReportPostRequest(new Date(), ActivityType.BEACON_EXIT.getName(),
+            activityReportRequest.addRecord(new Date(), ActivityType.BEACON_EXIT.getName(),
                     exitedBeaconId, null);
-            new ActivityReportTask().execute(request);
+        }
+
+        if (activityReportRequest.getLength() > 0) {
+            new ActivityReportTask(new ResponseListenerAdapter<ActivityReportPostResponse>() {
+                @Override
+                public void onSuccess(Response<ActivityReportPostResponse> response) {
+                    super.onSuccess(response);
+                    // do nothing
+                }
+            }).execute(activityReportRequest);
         }
 
         previousScanVisibleSpotz = currentScanVisibleSpotz;
@@ -119,12 +143,13 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
     }
 
 
-    private void outSpot(Context context, SpotzGetResponse spotzGetResponse) {
+    private void outSpot(Context context, SpotzGetResponse spotzGetResponse, ActivityReportPostRequest activityReportRequest) {
         sharedPreferences.edit().putBoolean(spotzGetResponse._id, false).apply();
 
-        ActivityReportPostRequest request = new ActivityReportPostRequest(new Date(), ActivityType.BEACON_EXIT.getName(),
-                null, spotzGetResponse._id);
-        new ActivityReportTask().execute(request);
+        if (activityReportRequest != null) {
+            activityReportRequest.addRecord(new Date(), ActivityType.SPOTZ_EXIT.getName(),
+                    null, spotzGetResponse._id);
+        }
 
         Intent broadcastIntent = new Intent(context.getPackageName() + BROADCAST);
         broadcastIntent.putExtra(Spotz.EXTRA_SPOTZ, Spot.clone(spotzGetResponse));

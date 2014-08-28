@@ -3,21 +3,42 @@ package com.localz.spotz.api.models.request.v1;
 import com.google.gson.annotations.Expose;
 import com.localz.spotz.api.utils.DateUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ActivityReportPostRequest {
     @Expose
-    public String dateTime;
-    @Expose
-    public String eventType;
+    public List<RecordData> records;
 
-    public String beaconId;
-    public String spotzId;
+    public void addRecord(Date dateTimeObject, String eventType, String beaconId, String spotzId) {
+        if (records == null) {
+            records = new ArrayList<RecordData>();
+        }
+        records.add(new RecordData(dateTimeObject, eventType, beaconId, spotzId));
+    }
 
-    public ActivityReportPostRequest(Date dateTimeObject, String eventType, String beaconId, String spotzId) {
-        this.dateTime = DateUtils.dateToIso8601Date(dateTimeObject);
-        this.eventType = eventType;
-        this.beaconId = beaconId;
-        this.spotzId = spotzId;
+    public int getLength() {
+        return records.size();
+    }
+
+
+    public class RecordData {
+        @Expose
+        public String dateTime;
+        @Expose
+        public String eventType;
+
+        @Expose
+        public String beaconId;
+        @Expose
+        public String spotzId;
+
+        public RecordData(Date dateTimeObject, String eventType, String beaconId, String spotzId) {
+            this.dateTime = DateUtils.dateToIso8601Date(dateTimeObject);
+            this.eventType = eventType;
+            this.beaconId = beaconId;
+            this.spotzId = spotzId;
+        }
     }
 }

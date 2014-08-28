@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class ActivityReportPostApi extends ApiMethod<ActivityReportPostRequest, ActivityReportPostResponse> {
 
-    private static final String PATH = "/report/beacons/{beaconId}";
+    private static final String PATH = "/report";
 
     @Override
     public Response<ActivityReportPostResponse> execute(ActivityReportPostRequest request) throws LocalzApiException {
@@ -30,12 +30,9 @@ public class ActivityReportPostApi extends ApiMethod<ActivityReportPostRequest, 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             String json = gson.toJson(request);
 
-            String path = PATH.replace("{beaconId}", request.beaconId);
-
-
             HttpResponse httpResponse = httpRequestFactory.buildPostRequest(
-                new GenericUrl(hostUrl + path), new ByteArrayContent("application/json", json.getBytes()))
-                .setHeaders(createDeviceSignedHeaders(new Date(), HttpMethods.POST, path, json))
+                new GenericUrl(hostUrl + PATH), new ByteArrayContent("application/json", json.getBytes()))
+                .setHeaders(createDeviceSignedHeaders(new Date(), HttpMethods.POST, PATH, json))
                 .execute();
 
             return response(httpResponse, ActivityReportPostResponse.TYPE);
