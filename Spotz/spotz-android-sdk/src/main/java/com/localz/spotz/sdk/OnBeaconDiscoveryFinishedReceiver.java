@@ -65,26 +65,23 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
         final ActivityReportPostRequest activityReportRequest = new ActivityReportPostRequest();
 
         final Map<BleData, String> cachedSpotzIdMap = Spotz.getInstance().getCachedSpotzIdMap();
+        final Map<BleData, String> cachedBeaconIdMap = Spotz.getInstance().getCachedBeaconIdMap();
         final Map<String, SpotzGetResponse> cachedSpotzMap = Spotz.getInstance().getCachedSpotzIdToSpotzMap();
         for (BleData bleData : bleDatas) {
+            // Track unique spotz we found during this scan
             final String spotzId = cachedSpotzIdMap.get(bleData);
             if (!TextUtils.isEmpty(spotzId)) {
                 currentScanVisibleSpotz.add(spotzId);
             }
 
-            SpotzGetResponse spotzDataForTheBeacon = cachedSpotzMap.get(spotzId);
-            if (spotzDataForTheBeacon != null) {
-                for (SpotzGetResponse.Beacon b : spotzDataForTheBeacon.beacons) {
-                    if (b.uuid.equalsIgnoreCase(bleData.uuid) && b.major == bleData.major && b.minor == bleData.minor
-                            && !previousScanVisibleBeacons.contains(b.beaconId)) {
-                        // b is the beacon that we see now, get b.beaconId and send it to server's activity log
-                        activityReportRequest.addRecord(new Date(), ActivityType.BEACON_ENTER.getName(),
-                                b.beaconId, null);
+            // Record unique beacons we found during this scan
+            String beaconId = cachedBeaconIdMap.get(bleData);
+            if (!previousScanVisibleBeacons.contains(beaconId)) {
+                // b is the beacon that we see now, get b.beaconId and send it to server's activity log
+                activityReportRequest.addRecord(new Date(), ActivityType.BEACON_ENTER.getName(),
+                        beaconId, spotzId);
 
-                        currentScanVisibleBeacons.add(b.beaconId);
-                        break;
-                    }
-                }
+                currentScanVisibleBeacons.add(beaconId);
             }
         }
 
@@ -146,10 +143,8 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
     private void outSpot(Context context, SpotzGetResponse spotzGetResponse, ActivityReportPostRequest activityReportRequest) {
         sharedPreferences.edit().putBoolean(spotzGetResponse._id, false).apply();
 
-        if (activityReportRequest != null) {
-            activityReportRequest.addRecord(new Date(), ActivityType.SPOTZ_EXIT.getName(),
-                    null, spotzGetResponse._id);
-        }
+        activityReportRequest.addRecord(new Date(), ActivityType.SPOTZ_EXIT.getName(),
+                null, spotzGetResponse._id);
 
         Intent broadcastIntent = new Intent(context.getPackageName() + BROADCAST);
         broadcastIntent.putExtra(Spotz.EXTRA_SPOTZ, Spot.clone(spotzGetResponse));

@@ -19,7 +19,11 @@ public class ActivityReportPostRequest {
     }
 
     public int getLength() {
-        return records.size();
+        int size = 0;
+        if (records != null) {
+            size = records.size();
+        }
+        return size;
     }
 
 

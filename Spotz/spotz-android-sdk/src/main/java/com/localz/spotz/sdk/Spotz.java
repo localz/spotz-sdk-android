@@ -42,7 +42,6 @@ public class Spotz {
     private Map<BleData, String> cachedSpotzIdMap = new HashMap<BleData, String>();
     private Map<BleData, String> cachedBeaconIdMap = new HashMap<BleData, String>();
     private Map<String, SpotzGetResponse> cachedSpotzIdToSpotzMap = new HashMap<String, SpotzGetResponse>();
-    private Map<String, SpotzGetResponse> cachedBeaconIdToSpotzMap = new HashMap<String, SpotzGetResponse>();
     private boolean delayedScanStart;
     private ScanMode delayedScanMode;
     private Long delayedInterval;
@@ -65,6 +64,9 @@ public class Spotz {
 
     public Map<BleData, String> getCachedSpotzIdMap() {
         return cachedSpotzIdMap;
+    }
+    public Map<BleData, String> getCachedBeaconIdMap() {
+        return cachedBeaconIdMap;
     }
     public Map<String, SpotzGetResponse> getCachedSpotzIdToSpotzMap() {
         return cachedSpotzIdToSpotzMap;
