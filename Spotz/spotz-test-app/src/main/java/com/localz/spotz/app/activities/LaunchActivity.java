@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,7 +107,7 @@ public class LaunchActivity extends Activity {
 
             Toast.makeText(context, "Entered the " + spot.name + " spot", Toast.LENGTH_SHORT).show();
 
-            setInVicinity();
+            setInVicinity(spot);
         }
     }
 
@@ -121,7 +122,7 @@ public class LaunchActivity extends Activity {
         }
     }
 
-    private void setInVicinity() {
+    private void setInVicinity(final Spot spot) {
         TextView vicinityText = (TextView) findViewById(R.id.activity_launch_vicinity_text);
         vicinityText.setText(R.string.activity_launch_message_in_vicinity);
 
@@ -129,6 +130,17 @@ public class LaunchActivity extends Activity {
             TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
             transition.resetTransition();
             transition.startTransition(400);
+
+            View metadataButton = findViewById(R.id.activity_launch_metadata_text);
+            metadataButton.setVisibility(View.VISIBLE);
+            metadataButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(LaunchActivity.this, MetadataActivity.class);
+                    intent.putExtra(Spotz.EXTRA_SPOTZ, spot);
+                    startActivity(intent);
+                }
+            });
         }
 
         isInVicinity = true;
@@ -142,6 +154,8 @@ public class LaunchActivity extends Activity {
             TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
             transition.resetTransition();
             transition.reverseTransition(400);
+
+            findViewById(R.id.activity_launch_metadata_text).setVisibility(View.INVISIBLE);
         }
 
         isInVicinity = false;

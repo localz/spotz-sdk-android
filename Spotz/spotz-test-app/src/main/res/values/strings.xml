@@ -6,5 +6,6 @@
     <string name="activity_launch_message_initializing">Initializing</string>
     <string name="activity_launch_message_not_in_vicinity">Not in the vicinity</string>
     <string name="activity_launch_message_in_vicinity">In the vicinity</string>
+    <string name="activity_launch_message_view_metadata">View metadata</string>
 
 </resources>

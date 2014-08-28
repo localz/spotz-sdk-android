@@ -9,6 +9,11 @@ import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
 
 public class ActivityReportTask extends ApiTask<ActivityReportPostRequest> {
 
+    public ActivityReportTask() {
+        super(new DefaultTaskRunner<ActivityReportPostRequest, ActivityReportPostResponse>(
+                new ActivityReportPostApi(), null));
+    }
+
     public ActivityReportTask(ResponseListenerAdapter<ActivityReportPostResponse> listener) {
         super(new DefaultTaskRunner<ActivityReportPostRequest, ActivityReportPostResponse>(
                 new ActivityReportPostApi(), listener));

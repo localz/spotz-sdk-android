@@ -40,7 +40,9 @@ public class Spotz {
     private SharedPreferences sharedPreferences;
     private Set<String> cachedUuids;
     private Map<BleData, String> cachedSpotzIdMap = new HashMap<BleData, String>();
-    private Map<String, SpotzGetResponse> cachedSpotzMap = new HashMap<String, SpotzGetResponse>();
+    private Map<BleData, String> cachedBeaconIdMap = new HashMap<BleData, String>();
+    private Map<String, SpotzGetResponse> cachedSpotzIdToSpotzMap = new HashMap<String, SpotzGetResponse>();
+    private Map<String, SpotzGetResponse> cachedBeaconIdToSpotzMap = new HashMap<String, SpotzGetResponse>();
     private boolean delayedScanStart;
     private ScanMode delayedScanMode;
     private Long delayedInterval;
@@ -64,8 +66,8 @@ public class Spotz {
     public Map<BleData, String> getCachedSpotzIdMap() {
         return cachedSpotzIdMap;
     }
-    public Map<String, SpotzGetResponse> getCachedSpotzMap() {
-        return cachedSpotzMap;
+    public Map<String, SpotzGetResponse> getCachedSpotzIdToSpotzMap() {
+        return cachedSpotzIdToSpotzMap;
     }
 
     /**
@@ -81,6 +83,8 @@ public class Spotz {
         if (Build.VERSION.SDK_INT >= 18) {
             BleManager.getInstance().stopScanning(context);
         }
+
+        context.getSharedPreferences(OnBeaconDiscoveryFoundReceiver.class.getName(), Context.MODE_PRIVATE).edit().clear().apply();
 
         final String deviceId = getSharedPreferences(context).getString("deviceId", null);
         final String sid = getSharedPreferences(context).getString("sid", null);
@@ -205,15 +209,7 @@ public class Spotz {
                     @Override
                     public void onSuccess(Response<BeaconsGetResponse[]> response) {
                         if (response.data != null && response.data.length > 0) {
-                            cachedUuids = new HashSet<String>();
-                            cachedSpotzIdMap = new HashMap<BleData, String>();
-
-                            for (BeaconsGetResponse beacon : response.data) {
-                                cachedUuids.add(beacon.uuid);
-                                cachedSpotzIdMap.put(
-                                        new BleData(beacon.uuid, null, beacon.major, beacon.minor, 0),
-                                        beacon.spotzId);
-                            }
+                            cacheBeaconData(response.data);
 
                             if (delayedScanStart) {
                                 if (delayedInterval != null && delayedDuration != null) {
@@ -231,11 +227,7 @@ public class Spotz {
                     @Override
                     public void onSuccess(Response<SpotzGetResponse[]> response) {
                         if (response.data != null && response.data.length > 0) {
-                            cachedSpotzMap = new HashMap<String, SpotzGetResponse>();
-
-                            for (SpotzGetResponse spot : response.data) {
-                                cachedSpotzMap.put(spot._id, spot);
-                            }
+                            cacheSpotzData(response.data);
                         }
 
                     }
@@ -271,15 +263,7 @@ public class Spotz {
                     @Override
                     public void onSuccess(Response<BeaconsGetResponse[]> response) {
                         if (response.data != null && response.data.length > 0) {
-                            cachedUuids = new HashSet<String>();
-                            cachedSpotzIdMap = new HashMap<BleData, String>();
-
-                            for (BeaconsGetResponse beacon : response.data) {
-                                cachedUuids.add(beacon.uuid);
-                                cachedSpotzIdMap.put(
-                                        new BleData(beacon.uuid, null, beacon.major, beacon.minor, 0),
-                                        beacon.spotzId);
-                            }
+                            cacheBeaconData(response.data);
 
                             if (delayedScanStart) {
                                 if (delayedInterval != null && delayedDuration != null) {
@@ -297,13 +281,8 @@ public class Spotz {
                     @Override
                     public void onSuccess(Response<SpotzGetResponse[]> response) {
                         if (response.data != null && response.data.length > 0) {
-                            cachedSpotzMap = new HashMap<String, SpotzGetResponse>();
-
-                            for (SpotzGetResponse spot : response.data) {
-                                cachedSpotzMap.put(spot._id, spot);
-                            }
+                            cacheSpotzData(response.data);
                         }
-
                     }
 
                     @Override
@@ -361,6 +340,27 @@ public class Spotz {
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putString("deviceId", deviceId);
         editor.apply();
+    }
+
+    private void cacheBeaconData(BeaconsGetResponse[] beaconResponse) {
+        cachedUuids = new HashSet<String>();
+        cachedSpotzIdMap = new HashMap<BleData, String>();
+        cachedBeaconIdMap = new HashMap<BleData, String>();
+
+        for (BeaconsGetResponse beacon : beaconResponse) {
+            cachedUuids.add(beacon.uuid);
+            BleData bleData = new BleData(beacon.uuid, null, beacon.major, beacon.minor, 0);
+            cachedSpotzIdMap.put(bleData, beacon.spotzId);
+            cachedBeaconIdMap.put(bleData, beacon.beaconId);
+        }
+    }
+
+    private void cacheSpotzData(SpotzGetResponse[] spotzResponse) {
+        cachedSpotzIdToSpotzMap = new HashMap<String, SpotzGetResponse>();
+
+        for (SpotzGetResponse spot : spotzResponse) {
+            cachedSpotzIdToSpotzMap.put(spot._id, spot);
+        }
     }
 
     private synchronized SharedPreferences getSharedPreferences(Context context) {

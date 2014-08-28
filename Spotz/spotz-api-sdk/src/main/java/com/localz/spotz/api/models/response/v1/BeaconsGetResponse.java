@@ -10,6 +10,7 @@ public class BeaconsGetResponse {
     }.getType();
 
     public String spotzId;
+    public String beaconId;
     public String uuid;
     public Integer major;
     public Integer minor;

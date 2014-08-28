@@ -8,18 +8,13 @@ import android.util.Log;
 
 import com.localz.proximity.ble.BleData;
 import com.localz.proximity.ble.BleManager;
-import com.localz.spotz.api.models.ActivityType;
 import com.localz.spotz.api.models.Response;
-import com.localz.spotz.api.models.request.v1.ActivityReportPostRequest;
 import com.localz.spotz.api.models.request.v1.SpotzGetRequest;
-import com.localz.spotz.api.models.response.v1.ActivityReportPostResponse;
 import com.localz.spotz.api.models.response.v1.SpotzGetResponse;
-import com.localz.spotz.sdk.api.ActivityReportTask;
 import com.localz.spotz.sdk.api.GetSpotzTask;
 import com.localz.spotz.sdk.listeners.ResponseListenerAdapter;
 import com.localz.spotz.sdk.models.Spot;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -36,7 +31,7 @@ public class OnBeaconDiscoveryFoundReceiver extends BroadcastReceiver {
         final BleData bleData = (BleData) intent.getSerializableExtra(BleManager.EXTRA_BLE_DATA);
 
         if (sharedPreferences == null) {
-            sharedPreferences = context.getSharedPreferences(Spotz.class.getName(), Context.MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(OnBeaconDiscoveryFoundReceiver.class.getName(), Context.MODE_PRIVATE);
         }
 
         // App is already initialized, let's rock and roll
@@ -44,37 +39,23 @@ public class OnBeaconDiscoveryFoundReceiver extends BroadcastReceiver {
             Map<BleData, String> cachedSpotzIdMap = Spotz.getInstance().getCachedSpotzIdMap();
             final String spotzId = cachedSpotzIdMap.get(bleData);
 
-            if (spotzId == null) {
-                // We don't have a cached spot, let's fetch from server
-                SpotzGetRequest request = new SpotzGetRequest(bleData.uuid, bleData.major, bleData.minor);
-                new GetSpotzTask(new ResponseListenerAdapter<SpotzGetResponse>() {
-                    @Override
-                    public void onSuccess(Response<SpotzGetResponse> response) {
-                        Spotz.getInstance().getCachedSpotzMap().put(response.data._id, response.data);
-                        Spotz.getInstance().getCachedSpotzIdMap().put(bleData, response.data._id);
-                        inSpot(context, response.data);
-                    }
-                }).execute(request);
-            }
-            else {
-                // Spot id was found in our cache. Let's check if we have also have the spot cached.
-                if (!isAlreadyInSpot(spotzId)) {
-                    Map<String, SpotzGetResponse> cachedSpotzMap = Spotz.getInstance().getCachedSpotzMap();
-                    SpotzGetResponse spot = cachedSpotzMap.get(spotzId);
-                    if (spot == null) {
-                        SpotzGetRequest request = new SpotzGetRequest(spotzId);
-                        new GetSpotzTask(new ResponseListenerAdapter<SpotzGetResponse>() {
-                            @Override
-                            public void onSuccess(Response<SpotzGetResponse> response) {
-                                Spotz.getInstance().getCachedSpotzMap().put(spotzId, response.data);
+            // Spot id was found in our cache. Let's check if we have also have the spot cached.
+            if (spotzId != null && !isAlreadyInSpot(spotzId)) {
+                Map<String, SpotzGetResponse> cachedSpotzMap = Spotz.getInstance().getCachedSpotzIdToSpotzMap();
+                SpotzGetResponse spot = cachedSpotzMap.get(spotzId);
+                if (spot == null) {
+                    SpotzGetRequest request = new SpotzGetRequest(spotzId);
+                    new GetSpotzTask(new ResponseListenerAdapter<SpotzGetResponse>() {
+                        @Override
+                        public void onSuccess(Response<SpotzGetResponse> response) {
+                            Spotz.getInstance().getCachedSpotzIdToSpotzMap().put(spotzId, response.data);
 
-                                inSpot(context, response.data);
-                            }
-                        }).execute(request);
-                    }
-                    else {
-                        inSpot(context, spot);
-                    }
+                            inSpot(context, response.data);
+                        }
+                    }).execute(request);
+                }
+                else {
+                    inSpot(context, spot);
                 }
             }
         }

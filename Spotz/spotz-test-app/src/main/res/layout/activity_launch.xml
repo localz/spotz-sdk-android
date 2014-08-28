@@ -30,14 +30,13 @@
         localz:font="roboto_thin"
         android:layout_centerInParent="true"/>
 
-
     <LinearLayout
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:paddingBottom="15dp"
         android:orientation="vertical">
-
 
         <ImageView
             android:layout_width="match_parent"
@@ -52,5 +51,18 @@
             android:textColor="#FFFFFF"
             android:gravity="center_horizontal"/>
     </LinearLayout>
+
+    <com.localz.spotz.app.widgets.CustomFontTextView
+        android:id="@+id/activity_launch_metadata_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="@string/activity_launch_message_view_metadata"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:paddingBottom="28dp"
+        localz:font="roboto_thin"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/footer"/>
 
 </RelativeLayout>
