@@ -1,10 +1,12 @@
 package com.localz.spotz.sdk;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.localz.proximity.ble.BleData;
 import com.localz.proximity.ble.BleManager;
@@ -72,6 +74,10 @@ public class Spotz {
         return cachedSpotzIdToSpotzMap;
     }
 
+    private OnBeaconDiscoveryFoundReceiver beaconDiscoveryFoundReceiver;
+    private OnBeaconDiscoveryFinishedReceiver beaconDiscoveryFinishedReceiver;
+
+
     /**
      * Initialize the Spotz SDK. This must be called successfully before using other SDK methods.
      *
@@ -82,6 +88,22 @@ public class Spotz {
      */
     public void initialize(Context context, final String appId, final String clientKey,
                            final InitializationListenerAdapter listener) {
+
+
+        // Initialise Receivers (from BLE toolkit)
+        // Note: when application to receive beacons event in the background as well,
+        // will need to have this receivers to be registered in the AndroidManifest instead.
+        if (beaconDiscoveryFoundReceiver == null) {
+            beaconDiscoveryFoundReceiver = new OnBeaconDiscoveryFoundReceiver();
+            beaconDiscoveryFinishedReceiver = new OnBeaconDiscoveryFinishedReceiver();
+
+            context.registerReceiver(beaconDiscoveryFoundReceiver,
+                    new IntentFilter("com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND"));
+            context.registerReceiver(beaconDiscoveryFinishedReceiver,
+                    new IntentFilter("com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH"));
+        }
+
+
         if (Build.VERSION.SDK_INT >= 18) {
             BleManager.getInstance().stopScanning(context);
         }
