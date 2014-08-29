@@ -77,12 +77,10 @@ public class OnBeaconDiscoveryFinishedReceiver extends BroadcastReceiver {
             // Record unique beacons we found during this scan
             String beaconId = cachedBeaconIdMap.get(bleData);
             if (!previousScanVisibleBeacons.contains(beaconId)) {
-                // b is the beacon that we see now, get b.beaconId and send it to server's activity log
                 activityReportRequest.addRecord(new Date(), ActivityType.BEACON_ENTER.getName(),
                         beaconId, spotzId);
-
-                currentScanVisibleBeacons.add(beaconId);
             }
+            currentScanVisibleBeacons.add(beaconId);
         }
 
         previousScanVisibleSpotz.removeAll(currentScanVisibleSpotz);

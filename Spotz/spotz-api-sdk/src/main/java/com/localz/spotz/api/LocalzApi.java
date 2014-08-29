@@ -15,7 +15,8 @@ public class LocalzApi {
     private String secret;
 
     private String channelId;
-    private final String host = "https://api.localz.co/spotz-dev/v1";
+    //private final String host = "https://api.localz.co/spotz-dev/v1";
+    private final String host = "https://api.localz.co/spotz/v1";
     //private final String host = "http://dev-spotz-api.herokuapp.com";
     //private final String host = "http://10.0.1.36:3000";
     //private final String host = "http://192.168.1.11:3000";
