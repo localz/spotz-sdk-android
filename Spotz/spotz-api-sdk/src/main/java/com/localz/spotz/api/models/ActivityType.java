@@ -5,10 +5,10 @@ package com.localz.spotz.api.models;
  */
 public enum ActivityType {
 
-    SPOTZ_ENTER("SpotzEnter"),
-    SPOTZ_EXIT("SpotzExit"),
-    BEACON_ENTER("BeaconEnter"),
-    BEACON_EXIT("BeaconExit");
+    SPOTZ_ENTER("se"),
+    SPOTZ_EXIT("sx"),
+    BEACON_ENTER("be"),
+    BEACON_EXIT("bx");
 
     private final String name;
 
