@@ -23,17 +23,50 @@ android {
     }
 }
 
-artifacts {
-    archives file('build/outputs/aar/spotz-android-sdk.aar')
+// This creates a JAR file as part of the jarRelease task
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    if (name.equals(com.android.builder.core.BuilderConstants.DEBUG)) {
+        return; // Skip debug builds.
+    }
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
 }
+
+// Maven POM data
+mvnGroupId = 'com.localz.spotz.sdk'
+mvnArtifactId = 'spotz-sdk-android'
+mvnVersion = '1.3.0'
+
+// Artifacts to deploy
+artifacts {
+    // Compatible with Android Studio, all in one package
+    archives file('build/outputs/aar/spotz-android-sdk.aar')
+    // Used with Eclipse, need to include other jar dependencies
+    archives file('build/libs/spotz-android-sdk.jar')
+}
+
+// Deploy artifacts to local maven repo
+task uploadArchivesToLocal(type: Upload, dependsOn: build)  {
+    configuration = configurations.archives
+    repositories.mavenDeployer {
+        repository(url: "file://${System.properties['user.home']}/.m2/repository")
+        pom.groupId = mvnGroupId
+        pom.artifactId = mvnArtifactId
+        pom.version = mvnVersion
+    }
+}
+
+// Deploy artifacts to github mvn repo pages
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "file://${System.properties['user.home']}/.m2/repository")
-            //repository(url: "file://${System.properties['user.home']}/dev/git/mvn-repo-pages")
-            pom.groupId = 'com.localz.spotz.sdk'
-            pom.artifactId = 'spotz-sdk-android'
-            pom.version = '1.3.0'
+            repository(url: "file://${System.properties['user.home']}/dev/git/mvn-repo-pages")
+            pom.groupId = mvnGroupId
+            pom.artifactId = mvnArtifactId
+            pom.version = mvnVersion
         }
     }
 }
