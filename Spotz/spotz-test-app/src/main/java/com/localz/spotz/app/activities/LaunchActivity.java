@@ -23,6 +23,7 @@ import com.localz.spotz.sdk.models.Spot;
 
 public class LaunchActivity extends Activity {
     public static final String TAG = LaunchActivity.class.getSimpleName();
+    private static final int REQUEST_BLUETOOTH = 100;
 
     private OnEnteredSpotBroadcastReceiver enteredSpotBroadcastReceiver;
     private OnExitedSpotReceiver exitedSpotBroadcastReceiver;
@@ -62,8 +63,8 @@ public class LaunchActivity extends Activity {
     private void initialiseSpotz() {
         // Let's initialize the spotz sdk so we can start receiving callbacks for any spotz we find!
         Spotz.getInstance().initialize(this,
-                "1234567890123456789012345678901234567890", // Your application ID goes here
-                "A234567890123456789012345678901234567890", // Your client key goes here
+                "EtI7OtvQwL46DoCLgW9YVMCAMJcjJLOsXFFuoRkf", // Your application ID goes here
+                "YCXM93jtyt9YBosiK3cL1pJBVW33rpZ405TSKGhE", // Your client key goes here
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
@@ -161,6 +162,22 @@ public class LaunchActivity extends Activity {
         isInVicinity = false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_BLUETOOTH) {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            // For this example app, let's try to ensure bluetooth is switched on
+            if (bluetoothAdapter.isEnabled()) {
+                initialiseSpotz();
+            }
+            else {
+                showBluetoothNotEnabledDialog();
+            }
+        }
+    }
+
     private void showBluetoothNotEnabledDialog() {
         new AlertDialog.Builder(this).setTitle("Bluetooth not enabled")
                 .setMessage("This application requires bluetooth to be enabled.")
@@ -170,7 +187,7 @@ public class LaunchActivity extends Activity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intentOpenBluetoothSettings = new Intent();
                         intentOpenBluetoothSettings.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
-                        startActivity(intentOpenBluetoothSettings);
+                        startActivityForResult(intentOpenBluetoothSettings, REQUEST_BLUETOOTH);
                         dialogInterface.dismiss();
                     }
                 }).setNegativeButton("Close", new DialogInterface.OnClickListener() {
