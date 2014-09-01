@@ -31,16 +31,16 @@ public class ActivityReportPostRequest {
         @Expose
         public String dateTime;
         @Expose
-        public String eventType;
+        public String event;
 
         @Expose
         public String beaconId;
         @Expose
         public String spotzId;
 
-        public RecordData(Date dateTimeObject, String eventType, String beaconId, String spotzId) {
+        public RecordData(Date dateTimeObject, String event, String beaconId, String spotzId) {
             this.dateTime = DateUtils.dateToIso8601Date(dateTimeObject);
-            this.eventType = eventType;
+            this.event = event;
             this.beaconId = beaconId;
             this.spotzId = spotzId;
         }
