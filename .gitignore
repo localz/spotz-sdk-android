@@ -1,6 +1,9 @@
 .gradle
-/local.properties
-/build
+local.properties
+build
+bin
+gen
+.settings
 **/.idea/workspace.xml
 **/.idea/tasks.xml
 **/.idea/dictionaries

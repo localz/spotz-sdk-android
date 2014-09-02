@@ -1,1 +1,0 @@
-include ':spotz-api-sdk', ':spotz-android-sdk', ':spotz-test-app'
