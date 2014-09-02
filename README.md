@@ -22,12 +22,14 @@ How to run the sample app
   1. Import the project:
     
     If you're using Android Studio, clone the repository, and then simply open the project.
+    Note you need to have internet connection for access public libraries.
 
-    If you're using Eclipse, clone the repository, and then import the project as an existing Android project.    
+    If you're using Eclipse, clone the repository, open empty workspace and then File -> Import -> General -> "Existing Project into Workspace".
     
   2. Define a Spot using the [Spotz console](todo). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the [iBeacon Toolkit](todo)!
     
-  3. Insert your Spotz application ID and client key into MainActivity.java:
+  3. Insert your Spotz application ID and client key (Spotz application ID and client key is shown on Spotz console when application
+   is created. Use Android key) into MainActivity.java:
 
         ...
         Spotz.getInstance().initialize(this,
@@ -46,6 +48,13 @@ To use the SDK library, both the library and your project must be compiled with 
 
 If you're a Gradle user you can easily include the library by specifying it as
 a dependency in your build.gradle script:
+
+    allprojects {
+        repositories {
+            maven { url "http://localz.github.io/mvn-repo" }
+            mavenCentral()
+        }
+    }
 
     compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.0@aar'
     compile 'com.localz.spotz.sdk:spotz-sdk-api:1.1.0'
@@ -74,7 +83,15 @@ If you're a Maven user you can include the library in your pom.xml:
       <type>aar</type>
     </dependency>
 
-Otherwise, you can manually copy all the JARs in the libs folder and add them to your project's dependencies.
+Otherwise, in Eclipse, you can manually copy all the JARs in the libs folder and add them to your project's dependencies.
+You libs folder will have at least the following jars:
+
+- ble-sdk-android-1.1.1.jar
+- google-http-client-1.19.0.jar
+- google-http-client-gson-1.19.0.jar
+- gson-2.3.jar
+- spotz-sdk-android-1.3.0.jar
+- spotz-sdk-api-1.1.0.jar
 
 How to use the SDK
 ==================
@@ -91,7 +108,7 @@ How to use the SDK
 
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
         
-  3. Initialize the SDK by providing your application ID and client key:
+  3. Initialize the SDK by providing your application ID and client key (as shown on Spotz console):
   
         Spotz.getInstance().initialize(context, // Your context
                 "your-application-id",          // Your application ID goes here
@@ -127,7 +144,10 @@ How to use the SDK
   To conserve battery, always stop scanning when not needed.
   
   6. To listen for when the device enters a Spot, define a BroadcastReceiver that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_ENTER</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_ENTER</code>
-  
+    You can find you package name in AndroidManifest.xml file:
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.foo.myapp" >
+        
   Here's an example:
 
         public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
@@ -140,7 +160,7 @@ How to use the SDK
         }
         
   7. To listen for when the device exits a Spot, define a BroadcastReceiver that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_EXIT</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_EXIT</code>
-  
+
   Here's an example:
 
         public class OnExitedSpotReceiver extends BroadcastReceiver {
