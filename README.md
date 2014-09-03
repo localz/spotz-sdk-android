@@ -1,7 +1,9 @@
-Spotz Android SDK
+<img alt="Localz logo" align="right" width="50" height="50" src="http://www.localz.co/assets/images/logo-round.png" /> Spotz Android SDK
 =================
 
-[Spotz](todo) is a user engagement platform that utilizes Bluetooth Low Energy. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street. The Spotz Android SDK allows your Android app to detect when it is in range of your Spotz and receive associated metadata - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
+[Spotz](todo) is a user engagement platform that utilizes Bluetooth Low Energy. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street. 
+
+The Spotz Android SDK allows your Android app to detect when it is in range of your Spotz and receive associated metadata - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
 
 Changelog
 =========
@@ -19,33 +21,34 @@ When a Spot is in range, the app will also display any data associated with that
 How to run the sample app
 =========================
 
-  1. Import the project:
-    
-    If you're using **Android Studio**, clone the repository, and then simply open the project.
-    Note you need to have internet connection for access public libraries.
+  1. Clone the repository:
+  
+        git clone git@github.com:localz/spotz-sdk-android.git
 
-    If you're using **Eclipse ADT**, clone the repository, then in your workspace do File -> Import -> General -> "Existing Project into Workspace".
+  2. Import the project:
     
-    *Note: the project targets Android 4.4 (API level 19) so check you have this version in your Android SDK.*
+    If you're using **Android Studio**, simply 'Open' the project.
+
+    If you're using **Eclipse ADT**, clone the repository, then in your workspace do File -> Import -> General -> Existing Projects into Workspace.
     
-  2. Define a Spot using the [Spotz console](http://spotz.localz.co). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
+    *The project targets Android 4.4 (API level 19) so check you have this version in your Android SDK.*
+    
+  3. Define a Spot using the [Spotz console](http://spotz.localz.co). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
   
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
          src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
   </a>
-  
     
-  3. Insert your Spotz application ID and client key into MainActivity.java. Spotz application ID and client key is shown in the Spotz console under your application. Be sure to use the Android client key:
+  4. Insert your Spotz application ID and client key into MainActivity.java. Spotz application ID and client key are shown in the Spotz console under your application. Be sure to use the *Android* client key:
 
         ...
         Spotz.getInstance().initialize(this,
                 "your-application-id", // Your application ID goes here
                 "your-client-key", // Your client key goes here
         ...
-  
 
-  4. Run it! (Note: you need a device running Android 4.3 or newer)
+  5. Run it! (Note: you need a device running Android 4.3 or newer)
 
 
 How to add the SDK to your own Project
@@ -59,12 +62,11 @@ a dependency in your build.gradle script:
     allprojects {
         repositories {
             maven { url "http://localz.github.io/mvn-repo" }
-            mavenCentral()
+            ...
         }
     }
     ...
     dependencies {
-        ...
         compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.0@aar'
         compile 'com.localz.spotz.sdk:spotz-sdk-api:1.1.0'
         compile 'com.localz.proximity.ble:ble-sdk-android:1.1.1@aar'
@@ -106,8 +108,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     </repositories>
     ...
 
-Otherwise, if you are old school, you can manually copy all the JARs in the libs folder and add them to your project's dependencies.
-You libs folder will have at least the following jars:
+Otherwise, if you are old school, you can manually copy all the JARs in the libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
 - ble-sdk-android-1.1.1.jar
 - google-http-client-1.19.0.jar
@@ -118,6 +119,8 @@ You libs folder will have at least the following jars:
 
 How to use the SDK
 ==================
+
+There are only 3 actions to implement - **initialize, scan, and listen!**
 
 *Refer to the sample app code for a working implementation of the SDK.*
 
