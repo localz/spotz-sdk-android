@@ -28,7 +28,7 @@ How to run the sample app
     
     *Note: the project targets Android 4.4 (API level 19) so check you have this version in your Android SDK.*
     
-  2. Define a Spot using the [Spotz console](todo). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
+  2. Define a Spot using the [Spotz console](http://spotz.localz.co). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
   
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
