@@ -21,12 +21,20 @@ How to run the sample app
 
   1. Import the project:
     
-    If you're using Android Studio, clone the repository, and then simply open the project.
+    If you're using **Android Studio**, clone the repository, and then simply open the project.
     Note you need to have internet connection for access public libraries.
 
-    If you're using Eclipse, clone the repository, then in your workspace do File -> Import -> General -> "Existing Project into Workspace".
+    If you're using **Eclipse ADT**, clone the repository, then in your workspace do File -> Import -> General -> "Existing Project into Workspace".
     
-  2. Define a Spot using the [Spotz console](todo). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the [iBeacon Toolkit](todo)!
+    *Note: the project targets Android 4.4 (API level 19) so check you have this version in your Android SDK.*
+    
+  2. Define a Spot using the [Spotz console](todo). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
+  
+    <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
+    <img alt="Beacon Toolkit on App Store" width="100" height="33"
+         src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
+  </a>
+  
     
   3. Insert your Spotz application ID and client key into MainActivity.java. Spotz application ID and client key is shown in the Spotz console under your application. Be sure to use the Android client key:
 
@@ -45,7 +53,7 @@ How to add the SDK to your own Project
 
 To use the SDK library, both the library and your project must be compiled with Android 4.3 (API level 18) or newer, as it utilizes Bluetooth Low Energy.
 
-If you're a Gradle user you can easily include the library by specifying it as
+If you're a **Gradle** user you can easily include the library by specifying it as
 a dependency in your build.gradle script:
 
     allprojects {
@@ -63,7 +71,7 @@ a dependency in your build.gradle script:
         ...
     }
 
-If you're a Maven user you can include the library in your pom.xml:
+If you're a **Maven** user you can include the library in your pom.xml:
 
     ...
     <dependency>
