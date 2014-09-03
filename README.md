@@ -54,15 +54,18 @@ a dependency in your build.gradle script:
             mavenCentral()
         }
     }
-
-    compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.0@aar'
-    compile 'com.localz.spotz.sdk:spotz-sdk-api:1.1.0'
-    compile 'com.localz.proximity.ble:ble-sdk-android:1.1.1@aar'
+    ...
+    dependencies {
+        ...
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-api:1.1.0'
+        compile 'com.localz.proximity.ble:ble-sdk-android:1.1.1@aar'
+        ...
+    }
 
 If you're a Maven user you can include the library in your pom.xml:
 
     ...
-
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
@@ -93,7 +96,6 @@ If you're a Maven user you can include the library in your pom.xml:
         </repository>
         ...
     </repositories>
-
     ...
 
 Otherwise, if you are old school, you can manually copy all the JARs in the libs folder and add them to your project's dependencies.
@@ -190,8 +192,6 @@ How to use the SDK
   7. To listen for when the device exits a Spot, define a BroadcastReceiver that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_EXIT</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_EXIT</code>
 
   Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
-
-        ...
 
         BroadcastReceiver exitedSpotBroadcastReceiver = new OnExitedSpotBroadcastReceiver();
         registerReceiver(exitedSpotBroadcastReceiver,
