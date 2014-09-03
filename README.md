@@ -162,7 +162,13 @@ How to use the SDK
         <manifest xmlns:android="http://schemas.android.com/apk/res/android"
                 package="com.foo.myapp" >
         
-  Here's an example BroadcastReceiver:
+  Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
+
+        BroadcastReceiver enteredSpotBroadcastReceiver = new OnEnteredSpotBroadcastReceiver();
+        registerReceiver(enteredSpotBroadcastReceiver,
+                new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_ENTER"));
+
+        ...
 
         public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
             @Override
@@ -172,12 +178,28 @@ How to use the SDK
                 // Do something with the Spot here!    
             }
         }
+
+  Or if you prefer, you can define your BroadcastReceiver in AndroidManifest.xml:
+
+        <receiver android:name="com.foo.app.services.OnEnteredSpotBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.foo.app.SPOTZ_ON_SPOT_ENTER" />
+            </intent-filter>
+        </receiver>
         
   7. To listen for when the device exits a Spot, define a BroadcastReceiver that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_EXIT</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_EXIT</code>
 
-  Here's an example BroadcastReceiver:
+  Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
 
-        public class OnExitedSpotReceiver extends BroadcastReceiver {
+        ...
+
+        BroadcastReceiver exitedSpotBroadcastReceiver = new OnExitedSpotBroadcastReceiver();
+        registerReceiver(exitedSpotBroadcastReceiver,
+                new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_EXIT"));
+
+        ...
+
+        public class OnExitedSpotBroadcastReceiver extends BroadcastReceiver {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
@@ -185,6 +207,14 @@ How to use the SDK
                 // Do something with the Spot here!
             }
         }
+
+  And here is the AndroidManifest.xml version:
+
+        <receiver android:name="com.foo.app.services.OnExitedSpotBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.foo.app.SPOTZ_ON_SPOT_EXIT" />
+            </intent-filter>
+        </receiver>
 
 Contribution
 ============
