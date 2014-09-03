@@ -24,12 +24,11 @@ How to run the sample app
     If you're using Android Studio, clone the repository, and then simply open the project.
     Note you need to have internet connection for access public libraries.
 
-    If you're using Eclipse, clone the repository, open empty workspace and then File -> Import -> General -> "Existing Project into Workspace".
+    If you're using Eclipse, clone the repository, then in your workspace do File -> Import -> General -> "Existing Project into Workspace".
     
   2. Define a Spot using the [Spotz console](todo). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the [iBeacon Toolkit](todo)!
     
-  3. Insert your Spotz application ID and client key (Spotz application ID and client key is shown on Spotz console when application
-   is created. Use Android key) into MainActivity.java:
+  3. Insert your Spotz application ID and client key into MainActivity.java. Spotz application ID and client key is shown in the Spotz console under your application. Be sure to use the Android client key:
 
         ...
         Spotz.getInstance().initialize(this,
@@ -55,13 +54,18 @@ a dependency in your build.gradle script:
             mavenCentral()
         }
     }
-
-    compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.0@aar'
-    compile 'com.localz.spotz.sdk:spotz-sdk-api:1.1.0'
-    compile 'com.localz.proximity.ble:ble-sdk-android:1.1.1@aar'
+    ...
+    dependencies {
+        ...
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-api:1.1.0'
+        compile 'com.localz.proximity.ble:ble-sdk-android:1.1.1@aar'
+        ...
+    }
 
 If you're a Maven user you can include the library in your pom.xml:
 
+    ...
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
@@ -73,7 +77,6 @@ If you're a Maven user you can include the library in your pom.xml:
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-api</artifactId>
       <version>1.1.0</version>
-      <type>jar</type>
     </dependency>
     
     <dependency>
@@ -83,7 +86,19 @@ If you're a Maven user you can include the library in your pom.xml:
       <type>aar</type>
     </dependency>
 
-Otherwise, in Eclipse, you can manually copy all the JARs in the libs folder and add them to your project's dependencies.
+    ...
+
+    <repositories>
+        ...
+        <repository>
+            <id>Localz mvn repository</id>
+            <url>http://localz.github.io/mvn-repo</url>
+        </repository>
+        ...
+    </repositories>
+    ...
+
+Otherwise, if you are old school, you can manually copy all the JARs in the libs folder and add them to your project's dependencies.
 You libs folder will have at least the following jars:
 
 - ble-sdk-android-1.1.1.jar
@@ -97,6 +112,8 @@ How to use the SDK
 ==================
 
 *Refer to the sample app code for a working implementation of the SDK.*
+
+###Initialize the SDK
 
   1. Ensure your AndroidManifest.xml has these permissions:
 
@@ -121,7 +138,13 @@ How to use the SDK
                 }
         );
   
-  4. To start scanning for Spotz, use one of these:
+Your project is now ready to start using the Spotz SDK!
+
+---
+
+###Scan for Spotz
+
+  To start scanning for Spotz, use one of these:
   
         // Normal scanning - ideal for general use 
         Spotz.getInstance().startScanningForSpotz(context, Spotz.ScanMode.NORMAL);
@@ -137,18 +160,31 @@ How to use the SDK
         // scanDurationMs - millisecs to scan for
         Spotz.getInstance().startScanningForSpotz(context, scanIntervalMs, scanDurationMs);
   
-  5. To stop scanning for Spotz:
+  To stop scanning for Spotz:
   
         Spotz.getInstance().stopScanningBeacons(context);
 
   To conserve battery, always stop scanning when not needed.
+
+---
+
+###Listen for Events
   
-  6. To listen for when the device enters a Spot, define a BroadcastReceiver that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_ENTER</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_ENTER</code>
-    You can find you package name in AndroidManifest.xml file:
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.foo.myapp" >
+#### On Spot Enter
+
+  To listen for when the device enters a Spot, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_ENTER</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_ENTER</code>
+    You can find your package name in AndroidManifest.xml file:
+
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+                package="com.foo.myapp" >
         
-  Here's an example:
+  Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
+
+        BroadcastReceiver enteredSpotBroadcastReceiver = new OnEnteredSpotBroadcastReceiver();
+        registerReceiver(enteredSpotBroadcastReceiver,
+                new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_ENTER"));
+
+        ...
 
         public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
             @Override
@@ -158,12 +194,28 @@ How to use the SDK
                 // Do something with the Spot here!    
             }
         }
+
+  Or if you prefer, you can define your BroadcastReceiver in AndroidManifest.xml:
+
+        <receiver android:name="com.foo.app.services.OnEnteredSpotBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.foo.app.SPOTZ_ON_SPOT_ENTER" />
+            </intent-filter>
+        </receiver>
         
-  7. To listen for when the device exits a Spot, define a BroadcastReceiver that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_EXIT</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_EXIT</code>
+#### On Spot Exit
+        
+  To listen for when the device exits a Spot, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_EXIT</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_EXIT</code>
 
-  Here's an example:
+  Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
 
-        public class OnExitedSpotReceiver extends BroadcastReceiver {
+        BroadcastReceiver exitedSpotBroadcastReceiver = new OnExitedSpotBroadcastReceiver();
+        registerReceiver(exitedSpotBroadcastReceiver,
+                new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_EXIT"));
+
+        ...
+
+        public class OnExitedSpotBroadcastReceiver extends BroadcastReceiver {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
@@ -172,14 +224,22 @@ How to use the SDK
             }
         }
 
+  Or if you prefer, here is the AndroidManifest.xml version:
+
+        <receiver android:name="com.foo.app.services.OnExitedSpotBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.foo.app.SPOTZ_ON_SPOT_EXIT" />
+            </intent-filter>
+        </receiver>
+
 Contribution
 ============
 
-For bugs, feature requests, or other questions, [file an issue][10].
+For bugs, feature requests, or other questions, [file an issue](https://github.com/localz/spotz-sdk-android/issues/new).
 
 License
 =======
 
-    Copyright 2014 Localz Pty Ltd
+Copyright 2014 Localz Pty Ltd
 
  

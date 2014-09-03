@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     private static final int REQUEST_BLUETOOTH = 100;
 
     private OnEnteredSpotBroadcastReceiver enteredSpotBroadcastReceiver;
-    private OnExitedSpotReceiver exitedSpotBroadcastReceiver;
+    private OnExitedSpotBroadcastReceiver exitedSpotBroadcastReceiver;
     private boolean isInVicinity = false;
 
     @Override
@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 
         // Register BLE scan receivers
         enteredSpotBroadcastReceiver = new OnEnteredSpotBroadcastReceiver();
-        exitedSpotBroadcastReceiver = new OnExitedSpotReceiver();
+        exitedSpotBroadcastReceiver = new OnExitedSpotBroadcastReceiver();
         registerReceiver(enteredSpotBroadcastReceiver,
                 new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_ENTER"));
         registerReceiver(exitedSpotBroadcastReceiver,
@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public class OnExitedSpotReceiver extends BroadcastReceiver {
+    public class OnExitedSpotBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
