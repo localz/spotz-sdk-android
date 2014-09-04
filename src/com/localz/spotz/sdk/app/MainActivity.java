@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,14 +42,9 @@ public class MainActivity extends Activity {
         registerReceiver(exitedSpotBroadcastReceiver,
                 new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_EXIT"));
 
-        // Check if device has bluetooth
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
-            // We just show a toast for this test app for informational purposes
-            Toast.makeText(this, "Bluetooth not found on your device. You won't be able to use any bluetooth features",
-                    Toast.LENGTH_SHORT).show();
-        }
-        else {
+        // Check if device has ble
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             // For this example app, let's try to ensure bluetooth is switched on
             if (bluetoothAdapter.isEnabled()) {
                 initialiseSpotz();
@@ -56,6 +52,13 @@ public class MainActivity extends Activity {
             else {
                 showBluetoothNotEnabledDialog();
             }
+        }
+        else {
+            // Tell the user this device is not supported
+            Toast.makeText(this, "Bluetooth not found on your device. You won't be able to use any bluetooth features",
+                    Toast.LENGTH_SHORT).show();
+            TextView vicinityText = (TextView) findViewById(R.id.activity_vicinity_text);
+            vicinityText.setText(R.string.message_device_not_supported);
         }
     }
 
@@ -124,15 +127,15 @@ public class MainActivity extends Activity {
     }
 
     private void setInVicinity(final Spot spot) {
-        TextView vicinityText = (TextView) findViewById(R.id.activity_launch_vicinity_text);
-        vicinityText.setText(R.string.activity_launch_message_in_vicinity);
+        TextView vicinityText = (TextView) findViewById(R.id.activity_vicinity_text);
+        vicinityText.setText(R.string.message_in_vicinity);
 
         if (!isInVicinity) {
             TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
             transition.resetTransition();
             transition.startTransition(400);
 
-            View metadataButton = findViewById(R.id.activity_launch_metadata_text);
+            View metadataButton = findViewById(R.id.activity_metadata_text);
             metadataButton.setVisibility(View.VISIBLE);
             metadataButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -148,15 +151,15 @@ public class MainActivity extends Activity {
     }
 
     private void setNotInVicinity() {
-        TextView vicinityText = (TextView) findViewById(R.id.activity_launch_vicinity_text);
-        vicinityText.setText(R.string.activity_launch_message_not_in_vicinity);
+        TextView vicinityText = (TextView) findViewById(R.id.activity_vicinity_text);
+        vicinityText.setText(R.string.message_not_in_vicinity);
 
         if (isInVicinity) {
             TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
             transition.resetTransition();
             transition.reverseTransition(400);
 
-            findViewById(R.id.activity_launch_metadata_text).setVisibility(View.INVISIBLE);
+            findViewById(R.id.activity_metadata_text).setVisibility(View.INVISIBLE);
         }
 
         isInVicinity = false;
