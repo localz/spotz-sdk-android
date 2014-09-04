@@ -21,6 +21,8 @@ When a Spot is in range, the app will also display any data associated with that
 How to run the sample app
 =========================
 
+The sample app requires devices running Android 4.3 or newer.
+
   1. Clone the repository:
   
         git clone git@github.com:localz/spotz-sdk-android.git
@@ -40,7 +42,7 @@ How to run the sample app
          src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
   </a>
     
-  4. Insert your Spotz application ID and client key into MainActivity.java. Spotz application ID and client key are shown in the Spotz console under your application. Be sure to use the *Android* client key:
+  4. Insert your Spotz application ID and client key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *Android* client key:
 
         ...
         Spotz.getInstance().initialize(this,
@@ -48,13 +50,13 @@ How to run the sample app
                 "your-client-key", // Your client key goes here
         ...
 
-  5. Run it! (Note: you need a device running Android 4.3 or newer)
+  5. Run it!
 
 
 How to add the SDK to your own Project
 ======================================
 
-To use the SDK library, both the library and your project must be compiled with Android 4.3 (API level 18) or newer, as it utilizes Bluetooth Low Energy.
+Your project must support minimum Android 2.3.3 API level 10. 
 
 If you're a **Gradle** user you can easily include the library by specifying it as
 a dependency in your build.gradle script:
@@ -120,6 +122,8 @@ Otherwise, if you are old school, you can manually copy all the JARs in the libs
 How to use the SDK
 ==================
 
+**Currently only devices that support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are able to make use of the Spotz SDK**.
+
 There are only 3 actions to implement - **initialize, scan, and listen!**
 
 *Refer to the sample app code for a working implementation of the SDK.*
@@ -174,8 +178,17 @@ Your project is now ready to start using the Spotz SDK!
   To stop scanning for Spotz:
   
         Spotz.getInstance().stopScanningBeacons(context);
-
+        
   To conserve battery, always stop scanning when not needed.
+
+  **Important!** Devices that don't support Bluetooth Low Energy will throw unchecked exception <code>DeviceNotSupportedException</code> when calling any of the scan methods. Ensure that the device is supported by using:
+  
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            // Do scanning!
+        }
+        else {
+            // No BLE support
+        }
 
 ---
 
