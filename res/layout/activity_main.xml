@@ -20,11 +20,11 @@
         android:layout_centerInParent="true"/>
 
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_launch_vicinity_text"
+        android:id="@+id/activity_vicinity_text"
         android:gravity="center"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/activity_launch_message_initializing"
+        android:text="@string/message_initializing"
         android:textSize="36sp"
         android:textColor="#f1c40f"
         localz:font="roboto_thin"
@@ -53,11 +53,11 @@
     </LinearLayout>
 
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_launch_metadata_text"
+        android:id="@+id/activity_metadata_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        android:text="@string/activity_launch_message_view_metadata"
+        android:text="@string/message_view_metadata"
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:paddingBottom="28dp"
