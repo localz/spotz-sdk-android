@@ -122,7 +122,7 @@ Otherwise, if you are old school, you can manually copy all the JARs in the libs
 How to use the SDK
 ==================
 
-**Currently only devices that support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are able to make use of the Spotz SDK**.
+**Currently only devices that support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are able to make use of the Spotz SDK**. You can still include the SDK on devices that don't support Bluetooth Low Energy, but calling any scan methods will throw an exception - see footer note in [Scan for Spotz](#scan-for-spotz) on how to deal with this.
 
 There are only 3 actions to implement - **initialize, scan, and listen!**
 
