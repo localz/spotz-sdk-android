@@ -1,26 +1,194 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:localz="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingLeft="18dp"
-    android:paddingRight="18dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:localz="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/key"
+        android:id="@+id/heading"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        localz:font="roboto_thin"
-        android:textColor="@android:color/white"/>
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:textSize="28sp"
+        android:textColor="#f1c40f"
+        localz:font="roboto_thin"/>
 
-    <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/value"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/spotz_data"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@android:color/white"/>
+        android:orientation="vertical"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/spotz_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="ID"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="NAME"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@id/spotz_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/spotz_id"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                localz:font="roboto_thin"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/spotz_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                localz:font="roboto_thin"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/beacon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+        <LinearLayout
+            android:id="@+id/beacon_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="UUID"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="MAJOR"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="MINOR"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="SERIAL"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/beacon_labels"
+            android:orientation="horizontal">
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/uuid"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                localz:font="roboto_thin"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/major"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                localz:font="roboto_thin"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/minor"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                localz:font="roboto_thin"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/serial"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                localz:font="roboto_thin"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/metadata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="18dp"
+        android:paddingRight="18dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+            android:id="@+id/key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            localz:font="roboto_thin"
+            android:textColor="@android:color/white"/>
+
+        <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+            android:id="@+id/value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+</RelativeLayout>

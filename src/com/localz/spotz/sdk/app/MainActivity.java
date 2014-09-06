@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 
     private OnEnteredSpotBroadcastReceiver enteredSpotBroadcastReceiver;
     private OnExitedSpotBroadcastReceiver exitedSpotBroadcastReceiver;
-    private boolean isInVicinity = false;
+    private boolean isInRange = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             // For this example app, let's try to ensure bluetooth is switched on
             if (bluetoothAdapter.isEnabled()) {
-                initialiseSpotz();
+                initialiseSpotzSdk();
             }
             else {
                 showBluetoothNotEnabledDialog();
@@ -57,12 +57,12 @@ public class MainActivity extends Activity {
             // Tell the user this device is not supported
             Toast.makeText(this, "Bluetooth not found on your device. You won't be able to use any bluetooth features",
                     Toast.LENGTH_SHORT).show();
-            TextView vicinityText = (TextView) findViewById(R.id.activity_vicinity_text);
-            vicinityText.setText(R.string.message_device_not_supported);
+            TextView rangeText = (TextView) findViewById(R.id.activity_range_text);
+            rangeText.setText(R.string.message_device_not_supported);
         }
     }
 
-    private void initialiseSpotz() {
+    private void initialiseSpotzSdk() {
         // Let's initialize the spotz sdk so we can start receiving callbacks for any spotz we find!
         Spotz.getInstance().initialize(this,
                 "your-application-id", // Your application ID goes here
@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
                         // Start scanning for spotz now that we're initialized
                         Spotz.getInstance().startScanningForSpotz(MainActivity.this, Spotz.ScanMode.EAGER);
 
-                        setNotInVicinity();
+                        setOutOfRange();
 
                         CustomAnimation.startWaveAnimation(findViewById(R.id.wave));
                     }
@@ -109,28 +109,28 @@ public class MainActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
 
-            Toast.makeText(context, "Entered the " + spot.name + " spot", Toast.LENGTH_SHORT).show();
-
-            setInVicinity(spot);
+            setInRange(spot);
         }
     }
 
     public class OnExitedSpotBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
-
-            Toast.makeText(context, "Exited the " + spot.name + " spot", Toast.LENGTH_SHORT).show();
-
-            setNotInVicinity();
+            setOutOfRange();
         }
     }
 
-    private void setInVicinity(final Spot spot) {
-        TextView vicinityText = (TextView) findViewById(R.id.activity_vicinity_text);
-        vicinityText.setText(R.string.message_in_vicinity);
+    private void setInRange(final Spot spot) {
+        TextView rangeText = (TextView) findViewById(R.id.activity_range_text);
+        rangeText.setText(getString(R.string.message_in_range) + " " + spot.name);
 
-        if (!isInVicinity) {
+        if (spot.enteredBeacon != null) {
+            TextView serialText = (TextView) findViewById(R.id.activity_serial_text);
+            serialText.setVisibility(View.VISIBLE);
+            serialText.setText(spot.enteredBeacon.serial);
+        }
+
+        if (!isInRange) {
             TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
             transition.resetTransition();
             transition.startTransition(400);
@@ -147,14 +147,17 @@ public class MainActivity extends Activity {
             });
         }
 
-        isInVicinity = true;
+        isInRange = true;
     }
 
-    private void setNotInVicinity() {
-        TextView vicinityText = (TextView) findViewById(R.id.activity_vicinity_text);
-        vicinityText.setText(R.string.message_not_in_vicinity);
+    private void setOutOfRange() {
+        TextView rangeText = (TextView) findViewById(R.id.activity_range_text);
+        rangeText.setText(R.string.message_not_in_range);
 
-        if (isInVicinity) {
+        TextView serialText = (TextView) findViewById(R.id.activity_serial_text);
+        serialText.setVisibility(View.GONE);
+
+        if (isInRange) {
             TransitionDrawable transition = (TransitionDrawable) findViewById(R.id.wave).getBackground();
             transition.resetTransition();
             transition.reverseTransition(400);
@@ -162,7 +165,7 @@ public class MainActivity extends Activity {
             findViewById(R.id.activity_metadata_text).setVisibility(View.INVISIBLE);
         }
 
-        isInVicinity = false;
+        isInRange = false;
     }
 
     @Override
@@ -173,7 +176,7 @@ public class MainActivity extends Activity {
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             // For this example app, let's try to ensure bluetooth is switched on
             if (bluetoothAdapter.isEnabled()) {
-                initialiseSpotz();
+                initialiseSpotzSdk();
             }
             else {
                 showBluetoothNotEnabledDialog();

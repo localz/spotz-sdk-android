@@ -14,13 +14,14 @@
         android:layout_centerInParent="true"/>
 
     <View
+        android:id="@+id/circle"
         android:layout_width="220dp"
         android:layout_height="220dp"
         android:background="@drawable/circle"
         android:layout_centerInParent="true"/>
 
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_vicinity_text"
+        android:id="@+id/activity_range_text"
         android:gravity="center"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -29,6 +30,17 @@
         android:textColor="#f1c40f"
         localz:font="roboto_thin"
         android:layout_centerInParent="true"/>
+
+    <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+        android:id="@+id/activity_serial_text"
+        android:gravity="center"
+        android:layout_marginTop="-26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#88bdc3c7"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/circle"/>
 
     <LinearLayout
         android:id="@+id/footer"

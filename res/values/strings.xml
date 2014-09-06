@@ -4,8 +4,8 @@
     <string name="app_name">Spotz Test App</string>
     <string name="title_activity_launch">spotz-test-app</string>
     <string name="message_initializing">Initializing</string>
-    <string name="message_not_in_vicinity">Out of range</string>
-    <string name="message_in_vicinity">In range</string>
+    <string name="message_not_in_range">Out of range</string>
+    <string name="message_in_range">In range of</string>
     <string name="message_device_not_supported">Device not supported</string>
     <string name="message_view_metadata">View metadata</string>
 
