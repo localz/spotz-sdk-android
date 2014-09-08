@@ -3,7 +3,7 @@
 
 [Spotz](todo) is a user engagement platform that utilizes Bluetooth Low Energy. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street. 
 
-The Spotz Android SDK allows your Android app to detect when it is in range of your Spotz and receive associated metadata - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
+The Spotz Android SDK allows your Android app to detect when it is in range of your Spotz and receive payload data - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
 
 Changelog
 =========

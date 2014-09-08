@@ -65,11 +65,11 @@
     </LinearLayout>
 
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_metadata_text"
+        android:id="@+id/activity_spot_data_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        android:text="@string/message_view_metadata"
+        android:text="@string/message_view_spot_data"
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:paddingBottom="28dp"

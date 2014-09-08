@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#95a5a6"
-    tools:context="com.localz.spotz.app.activities.MetadataActivity">
+    tools:context="com.localz.spotz.app.activities.SpotDataActivity">
 
     <ListView
-        android:id="@+id/metadata_list"
+        android:id="@+id/spot_data_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

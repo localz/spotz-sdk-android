@@ -135,12 +135,12 @@ public class MainActivity extends Activity {
             transition.resetTransition();
             transition.startTransition(400);
 
-            View metadataButton = findViewById(R.id.activity_metadata_text);
-            metadataButton.setVisibility(View.VISIBLE);
-            metadataButton.setOnClickListener(new View.OnClickListener() {
+            View spotDataButton = findViewById(R.id.activity_spot_data_text);
+            spotDataButton.setVisibility(View.VISIBLE);
+            spotDataButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, MetadataActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SpotDataActivity.class);
                     intent.putExtra(Spotz.EXTRA_SPOTZ, spot);
                     startActivity(intent);
                 }
@@ -162,7 +162,7 @@ public class MainActivity extends Activity {
             transition.resetTransition();
             transition.reverseTransition(400);
 
-            findViewById(R.id.activity_metadata_text).setVisibility(View.INVISIBLE);
+            findViewById(R.id.activity_spot_data_text).setVisibility(View.INVISIBLE);
         }
 
         isInRange = false;
@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
 
     private void showBluetoothNotEnabledDialog() {
         new AlertDialog.Builder(this).setTitle("Bluetooth not enabled")
-                .setMessage("This application requires bluetooth to be enabled.")
+                .setMessage(R.string.message_bluetooth_not_enabled)
                 .setCancelable(false)
                 .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
                     @Override
@@ -208,7 +208,7 @@ public class MainActivity extends Activity {
 
     private void createErrorDialogInitialising() {
         new AlertDialog.Builder(MainActivity.this).setTitle("Error")
-                .setMessage("Unable to initialize application. Please check that you have network connectivity and try again. If the problem persists, contact Localz.")
+                .setMessage(R.string.message_initialize_error)
                 .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

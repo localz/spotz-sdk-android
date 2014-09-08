@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name=".MetadataActivity"
+            android:name=".SpotDataActivity"
             android:screenOrientation="portrait" />
         
         <!-- These services must be defined in your app to enable background scanning -->

@@ -16,36 +16,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MetadataActivity extends Activity {
+public class SpotDataActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_metadata);
+        setContentView(R.layout.activity_spot_data);
 
         Spot spot = (Spot) getIntent().getSerializableExtra(Spotz.EXTRA_SPOTZ);
 
-        ListView metadataList = (ListView) findViewById(R.id.metadata_list);
-        metadataList.setAdapter(new MetadataAdapter(spot));
+        ListView spotDataList = (ListView) findViewById(R.id.spot_data_list);
+        spotDataList.setAdapter(new SpotDataAdapter(spot));
     }
 
-    public class MetadataAdapter extends BaseAdapter {
+    public class SpotDataAdapter extends BaseAdapter {
         private static final int TYPE_HEADING = 0;
         private static final int TYPE_SPOT_DATA = 1;
         private static final int TYPE_BEACON = 2;
-        private static final int TYPE_METADATA = 3;
-        private static final int TYPE_COUNT = TYPE_METADATA + 1;
+        private static final int TYPE_PAYLOAD = 3;
+        private static final int TYPE_COUNT = TYPE_PAYLOAD + 1;
 
         private final List<Object> dataList;
         private final Map<Integer, Integer> typeMap;
 
-        public MetadataAdapter(Spot spot) {
+        public SpotDataAdapter(Spot spot) {
             dataList = new ArrayList<Object>();
 
             typeMap = new HashMap<Integer, Integer>();
             int i = 0;
             typeMap.put(i++, TYPE_HEADING);
-            dataList.add("Spot data");
+            dataList.add("Spot info");
             typeMap.put(i++, TYPE_SPOT_DATA);
             dataList.add(spot);
             typeMap.put(i++, TYPE_HEADING);
@@ -55,9 +55,9 @@ public class MetadataActivity extends Activity {
                 dataList.add(beacon);
             }
             typeMap.put(i++, TYPE_HEADING);
-            dataList.add("Metadata");
-            for (Map.Entry<String, Object> entry : spot.metadata.entrySet()) {
-                typeMap.put(i++, TYPE_METADATA);
+            dataList.add("Payload");
+            for (Map.Entry<String, Object> entry : spot.payload.entrySet()) {
+                typeMap.put(i++, TYPE_PAYLOAD);
                 dataList.add(entry);
             }
         }
@@ -92,7 +92,7 @@ public class MetadataActivity extends Activity {
             ViewHolder viewHolder;
             View view = convertView;
             if (view == null) {
-                view = getLayoutInflater().inflate(R.layout.listview_metadata_item, parent, false);
+                view = getLayoutInflater().inflate(R.layout.listview_spot_data_item, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.spotzDataLayout = view.findViewById(R.id.spotz_data);
                 viewHolder.id = (TextView) view.findViewById(R.id.spotz_id);
@@ -103,7 +103,7 @@ public class MetadataActivity extends Activity {
                 viewHolder.major = (TextView) view.findViewById(R.id.major);
                 viewHolder.minor = (TextView) view.findViewById(R.id.minor);
                 viewHolder.serial = (TextView) view.findViewById(R.id.serial);
-                viewHolder.metadataLayout = view.findViewById(R.id.metadata);
+                viewHolder.payloadLayout = view.findViewById(R.id.payload);
                 viewHolder.key = (TextView) view.findViewById(R.id.key);
                 viewHolder.value = (TextView) view.findViewById(R.id.value);
                 view.setTag(viewHolder);
@@ -119,7 +119,7 @@ public class MetadataActivity extends Activity {
                     viewHolder.heading.setVisibility(View.VISIBLE);
                     viewHolder.spotzDataLayout.setVisibility(View.GONE);
                     viewHolder.beaconLayout.setVisibility(View.GONE);
-                    viewHolder.metadataLayout.setVisibility(View.GONE);
+                    viewHolder.payloadLayout.setVisibility(View.GONE);
                     break;
                 case TYPE_SPOT_DATA:
                     Spot spot = (Spot) getItem(position);
@@ -128,7 +128,7 @@ public class MetadataActivity extends Activity {
                     viewHolder.spotzDataLayout.setVisibility(View.VISIBLE);
                     viewHolder.heading.setVisibility(View.GONE);
                     viewHolder.beaconLayout.setVisibility(View.GONE);
-                    viewHolder.metadataLayout.setVisibility(View.GONE);
+                    viewHolder.payloadLayout.setVisibility(View.GONE);
                     break;
                 case TYPE_BEACON:
                     Spot.Beacon beacon = (Spot.Beacon) getItem(position);
@@ -139,13 +139,13 @@ public class MetadataActivity extends Activity {
                     viewHolder.beaconLayout.setVisibility(View.VISIBLE);
                     viewHolder.spotzDataLayout.setVisibility(View.GONE);
                     viewHolder.heading.setVisibility(View.GONE);
-                    viewHolder.metadataLayout.setVisibility(View.GONE);
+                    viewHolder.payloadLayout.setVisibility(View.GONE);
                     break;
-                case TYPE_METADATA:
-                    Map.Entry<String, Object> metadata = (Map.Entry<String, Object>) getItem(position);
-                    viewHolder.key.setText(metadata.getKey());
-                    viewHolder.value.setText(metadata.getValue().toString());
-                    viewHolder.metadataLayout.setVisibility(View.VISIBLE);
+                case TYPE_PAYLOAD:
+                    Map.Entry<String, Object> payload = (Map.Entry<String, Object>) getItem(position);
+                    viewHolder.key.setText(payload.getKey());
+                    viewHolder.value.setText(payload.getValue().toString());
+                    viewHolder.payloadLayout.setVisibility(View.VISIBLE);
                     viewHolder.spotzDataLayout.setVisibility(View.GONE);
                     viewHolder.heading.setVisibility(View.GONE);
                     viewHolder.beaconLayout.setVisibility(View.GONE);
@@ -166,7 +166,7 @@ public class MetadataActivity extends Activity {
         public TextView major;
         public TextView minor;
         public TextView serial;
-        public View metadataLayout;
+        public View payloadLayout;
         public TextView key;
         public TextView value;
     }
