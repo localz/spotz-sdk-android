@@ -180,13 +180,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            localz:font="roboto_thin"
             android:textColor="@android:color/white"/>
 
         <com.localz.spotz.sdk.app.widgets.CustomFontTextView
             android:id="@+id/value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            localz:font="roboto_thin"
             android:textSize="14sp"
             android:textColor="@android:color/white"/>
 
