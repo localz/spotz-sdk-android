@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
         super.onDestroy();
 
         // If this activity is destroyed we want to stop scanning for beacons
-        Spotz.getInstance().stopScanningBeacons(this);
+        Spotz.getInstance().stopScanningForSpotz(this);
         unregisterReceiver(exitedSpotBroadcastReceiver);
         unregisterReceiver(enteredSpotBroadcastReceiver);
     }
