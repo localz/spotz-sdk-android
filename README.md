@@ -31,7 +31,7 @@ The sample app requires devices running Android 4.3 or newer.
     
     If you're using **Android Studio**, simply 'Open' the project.
 
-    If you're using **Eclipse ADT**, clone the repository, then in your workspace do File -> Import -> General -> Existing Projects into Workspace.
+    If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace.
     
     *The project targets Android 4.4 (API level 19) so check you have this version in your Android SDK.*
     
@@ -177,11 +177,13 @@ Your project is now ready to start using the Spotz SDK!
         // scanDurationMs - millisecs to scan for
         Spotz.getInstance().startScanningForSpotz(context, scanIntervalMs, scanDurationMs);
   
+  The SDK will scan for beacons while your app is in the background.
+  
   To stop scanning for Spotz:
   
         Spotz.getInstance().stopScanningBeacons(context);
         
-  To conserve battery, always stop scanning when not needed. The SDK will continue to scan for beacons while your app is in the background.
+   To conserve battery, always stop scanning when not needed. 
 
   **Important!** Devices that don't support Bluetooth Low Energy will throw unchecked exception <code>DeviceNotSupportedException</code> when calling any of the scan methods. Ensure that the device is supported by using:
   
