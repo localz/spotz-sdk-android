@@ -65,8 +65,8 @@ public class MainActivity extends Activity {
     private void initialiseSpotzSdk() {
         // Let's initialize the spotz sdk so we can start receiving callbacks for any spotz we find!
         Spotz.getInstance().initialize(this,
-                "iCsUIfqExoLSMDNCCBY2icEbBocXA3D2TGp6cIuU", // Your application ID goes here
-                "9iN2htW5EQZSaBG4GLQyfWTEAN5Md4MoZMkPB7Rk", // Your client key goes here
+                "your-application-id", // Your application ID goes here
+                "your-client-key", // Your client key goes here
 
                 new InitializationListenerAdapter() {
                     @Override
@@ -95,11 +95,32 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (Spotz.getInstance().isInitialized()) {
+            Spotz.getInstance().startScanningForSpotz(this,
+                    Spotz.ScanMode.EAGER);
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        // If this activity is paused we want to stop scanning for beacons
+        // Depending on usecase, it might be desirable to leave scanning when application
+        // is in background.
+        if (Spotz.getInstance().isInitialized()) {
+            Spotz.getInstance().stopScanningForSpotz(this);
+        }
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        // If this activity is destroyed we want to stop scanning for beacons
-        Spotz.getInstance().stopScanningForSpotz(this);
+        // If this activity is destroyed we want to unregister receivers
         unregisterReceiver(exitedSpotBroadcastReceiver);
         unregisterReceiver(enteredSpotBroadcastReceiver);
     }
