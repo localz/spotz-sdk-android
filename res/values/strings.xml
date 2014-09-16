@@ -8,7 +8,7 @@
     <string name="message_in_range">In range of</string>
     <string name="message_device_not_supported">Device not supported</string>
     <string name="message_view_spot_data">View spot data</string>
-    <string name="message_initialize_error">Unable to initialize application. Please check that you have network connectivity and try again. If the problem persists, contact Localz.</string>
+    <string name="message_initialize_error">Please check you have network connectivity, and that your application keys are correct.</string>
     <string name="message_bluetooth_not_enabled">This application requires bluetooth to be enabled.</string>
 
 </resources>

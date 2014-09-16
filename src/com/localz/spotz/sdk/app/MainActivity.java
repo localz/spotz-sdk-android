@@ -65,8 +65,8 @@ public class MainActivity extends Activity {
     private void initialiseSpotzSdk() {
         // Let's initialize the spotz sdk so we can start receiving callbacks for any spotz we find!
         Spotz.getInstance().initialize(this,
-                "your-application-id", // Your application ID goes here
-                "your-client-key", // Your client key goes here
+                "iCsUIfqExoLSMDNCCBY2icEbBocXA3D2TGp6cIuU", // Your application ID goes here
+                "9iN2htW5EQZSaBG4GLQyfWTEAN5Md4MoZMkPB7Rk", // Your client key goes here
 
                 new InitializationListenerAdapter() {
                     @Override
@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
     }
 
     private void createErrorDialogInitialising() {
-        new AlertDialog.Builder(MainActivity.this).setTitle("Error")
+        new AlertDialog.Builder(MainActivity.this).setTitle("Unable to initialize")
                 .setMessage(R.string.message_initialize_error)
                 .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                     @Override
