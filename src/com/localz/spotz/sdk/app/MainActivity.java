@@ -48,12 +48,10 @@ public class MainActivity extends Activity {
             // For this example app, let's try to ensure bluetooth is switched on
             if (bluetoothAdapter.isEnabled()) {
                 initialiseSpotzSdk();
-            }
-            else {
+            } else {
                 showBluetoothNotEnabledDialog();
             }
-        }
-        else {
+        } else {
             // Tell the user this device is not supported
             Toast.makeText(this, "Bluetooth not found on your device. You won't be able to use any bluetooth features",
                     Toast.LENGTH_SHORT).show();
@@ -74,7 +72,11 @@ public class MainActivity extends Activity {
                         // Start scanning for spotz now that we're initialized
                         Spotz.getInstance().startScanningForSpotz(MainActivity.this, Spotz.ScanMode.EAGER);
 
-                        setOutOfRange();
+                        TextView rangeText = (TextView) findViewById(R.id.activity_range_text);
+
+                        if (getString(R.string.message_initializing).equalsIgnoreCase(rangeText.getText().toString())) {
+                            setOutOfRange();
+                        }
 
                         CustomAnimation.startWaveAnimation(findViewById(R.id.wave));
                     }
@@ -198,8 +200,7 @@ public class MainActivity extends Activity {
             // For this example app, let's try to ensure bluetooth is switched on
             if (bluetoothAdapter.isEnabled()) {
                 initialiseSpotzSdk();
-            }
-            else {
+            } else {
                 showBluetoothNotEnabledDialog();
             }
         }
