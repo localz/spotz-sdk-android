@@ -42,6 +42,8 @@ The sample app requires devices running Android 4.3 or newer.
          src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
   </a>
     
+  Hopefully when Android supports peripheral mode in Android L, we will also have an Android Beacon Toolkit!
+
   4. Insert your Spotz application ID and client key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *Android* client key:
 
         ...
@@ -179,7 +181,7 @@ Your project is now ready to start using the Spotz SDK!
   
         Spotz.getInstance().stopScanningBeacons(context);
         
-  To conserve battery, always stop scanning when not needed.
+  To conserve battery, always stop scanning when not needed. The SDK will continue to scan for beacons while your app is in the background.
 
   **Important!** Devices that don't support Bluetooth Low Energy will throw unchecked exception <code>DeviceNotSupportedException</code> when calling any of the scan methods. Ensure that the device is supported by using:
   
