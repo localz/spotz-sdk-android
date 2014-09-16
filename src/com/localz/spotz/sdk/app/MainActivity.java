@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
     }
 
     private void createErrorDialogInitialising() {
-        new AlertDialog.Builder(MainActivity.this).setTitle("Error")
+        new AlertDialog.Builder(MainActivity.this).setTitle("Unable to initialize")
                 .setMessage(R.string.message_initialize_error)
                 .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                     @Override
