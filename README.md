@@ -8,6 +8,9 @@ The Spotz Android SDK allows your Android app to detect when it is in range of y
 Changelog
 =========
 
+**1.3.1**
+* Fixed triggering on Spotz that did not exist for the application.
+
 **1.3.0**
 * Initial public release.
 
@@ -71,7 +74,7 @@ a dependency in your build.gradle script:
     }
     ...
     dependencies {
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:1.3.1@aar'
         compile 'com.localz.spotz.sdk:spotz-sdk-api:1.1.0'
         compile 'com.localz.proximity.ble:ble-sdk-android:1.1.1@aar'
         ...
@@ -83,7 +86,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>1.3.0</version>
+      <version>1.3.1</version>
       <type>aar</type>
     </dependency>
     
@@ -118,7 +121,7 @@ Otherwise, if you are old school, you can manually copy all the JARs in the libs
 - google-http-client-1.19.0.jar
 - google-http-client-gson-1.19.0.jar
 - gson-2.3.jar
-- spotz-sdk-android-1.3.0.jar
+- spotz-sdk-android-1.3.1.jar
 - spotz-sdk-api-1.1.0.jar
 
 How to use the SDK
