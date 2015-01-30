@@ -341,7 +341,7 @@ In this case, SDK initialization will be similar to the following:
 
 #### Integration with 3rd party systems
 
-[Spotz integration guide] (http://spotz.localz.com) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:
+[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:
 <pre>
         <b>final DeviceUpdateIdsPutRequest updateIdsRequest = new DeviceUpdateIdsPutRequest();
 		updateIdsRequest.ids = new DeviceUpdateIdsPutRequest.Ids();
