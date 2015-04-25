@@ -47,7 +47,7 @@ The sample app requires devices running Android 4.3 or newer.
   
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
-         src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
+         src="http://localz.wpengine.com/wp-content/uploads/2014/03/app-store-300x102.jpg" />
   </a>
     
   Hopefully when Android supports peripheral mode in Android L, we will also have an Android Beacon Toolkit!
