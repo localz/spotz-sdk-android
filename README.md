@@ -1,4 +1,4 @@
-<a href="http://www.localz.co/"><img alt="Localz logo" align="right" width="180" height="50" src="http://localz.com/wp-content/uploads/2015/02/localz_logo.png" /></a> Spotz Android SDK
+<a href="http://www.localz.com/"><img alt="Localz logo" align="right" width="180" height="50" src="http://localz.com/wp-content/uploads/2015/02/localz_logo.png" /></a> Spotz Android SDK
 =================
 
 [Spotz](http://spotz.localz.co/) is a user engagement platform that utilizes Bluetooth Low Energy. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street. 
