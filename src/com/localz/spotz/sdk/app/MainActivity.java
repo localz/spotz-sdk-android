@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.localz.spotz.api.models.request.v1.DeviceUpdateIdsPutRequest;
 import com.localz.spotz.sdk.Spotz;
 import com.localz.spotz.sdk.app.model.SpotzMap;
 import com.localz.spotz.sdk.app.widgets.CustomAnimation;
@@ -104,16 +103,11 @@ public class MainActivity extends Activity {
 	private void initialiseSpotzSdk() {
 		// Let's initialize the spotz sdk so we can start receiving callbacks
 		// for any spotz we find!
-        DeviceUpdateIdsPutRequest.Ids ids = new DeviceUpdateIdsPutRequest.Ids();
-        ids.payload = new HashMap<String, String>();
-        ids.payload.put("symbols", "EUR");
-
         Spotz.getInstance().initialize(this,
-                "48ybQn2ZjEpflPUMYeoR0NUbdnpZtAP3mW0LLNP6", // Your application
-                // ID goes here
-                "XqiNEBY75GAwNtiP8rtjfJuZ5T1SNiFL6wr8bOrD", // Your client key
+                "your-application-id", // Your application ID goes here
+                "your-client-key", // Your client key goes here
                 // goes here
-                null, ids, new InitializationListenerAdapter() {
+                null, null, new InitializationListenerAdapter() {
 					@Override
 					public void onInitialized() {
 
