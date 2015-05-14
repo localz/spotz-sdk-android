@@ -54,8 +54,10 @@ public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(("enter" + spot.id).hashCode(), notification);
-        
-        new SpotzMap(context).put(spot.id, spot);
+
+        SpotzMap spotzMap = new SpotzMap(context);
+        spotzMap.readCache();
+        spotzMap.put(spot.id, spot);
         
         // Notify activity
         Intent notifyActivityIntent = new Intent(context.getPackageName() + MainActivity.SPOT_ENTERED_OR_EXITED);

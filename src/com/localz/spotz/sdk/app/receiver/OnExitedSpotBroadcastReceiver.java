@@ -50,8 +50,10 @@ public class OnExitedSpotBroadcastReceiver extends BroadcastReceiver {
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(("exit" + spot.id).hashCode(), mBuilder.build());
-        
-        new SpotzMap(context).remove(spot.id);
+
+        SpotzMap spotzMap = new SpotzMap(context);
+        spotzMap.readCache();
+        spotzMap.remove(spot.id);
         
         // Notify activity
         Intent notifyActivityIntent = new Intent(context.getPackageName() + MainActivity.SPOT_ENTERED_OR_EXITED);

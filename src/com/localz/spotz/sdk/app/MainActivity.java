@@ -49,6 +49,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		inSpotMap = new SpotzMap(this);
+        inSpotMap.readCache();
 
 		rangingDistanceTextView = (TextView) findViewById(R.id.activity_spot_ranging_distance);
 		nameOfSpotText = (TextView) findViewById(R.id.activity_range_text);
@@ -156,6 +157,7 @@ public class MainActivity extends Activity {
 
 	private void adjustUI() {
 		inSpotMap = new SpotzMap(this);
+        inSpotMap.readCache();
 
 		MainActivity.this.runOnUiThread(new Runnable() {
 			@Override

@@ -1,5 +1,9 @@
 package com.localz.spotz.sdk.app.model;
 
+import android.content.Context;
+
+import com.localz.spotz.sdk.models.Spot;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,13 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-
-import android.content.Context;
-
-import com.localz.spotz.sdk.models.Spot;
 
 /**
  * Extension of HashMap that backs up data to a local file. 
@@ -33,36 +31,37 @@ public class SpotzMap extends ConcurrentHashMap<String, Spot> {
 	public SpotzMap(Context context) {
 		super();
 		file = new File(context.getFilesDir(), SPOTZ_MAP_FILE);
-
-		ObjectInputStream inputStream = null;
-		try {
-			inputStream = new ObjectInputStream(new FileInputStream(file));
-			ConcurrentHashMap<String, Spot> spotzFromFile = (ConcurrentHashMap<String, Spot>) inputStream
-					.readObject();
-			this.putAll(spotzFromFile);
-		} catch (OptionalDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try { 
-				if (inputStream != null) {
-					inputStream.close();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
 	}
 
-	@Override
+    public void readCache() {
+        ObjectInputStream inputStream = null;
+        try {
+            inputStream = new ObjectInputStream(new FileInputStream(file));
+            ConcurrentHashMap<String, Spot> spotzFromFile = (ConcurrentHashMap<String, Spot>) inputStream
+                    .readObject();
+            this.putAll(spotzFromFile);
+        } catch (OptionalDataException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
 	public Spot put(String key, Spot value) {
 		Spot spot = super.put(key, value);
 		writeToFile(); 
