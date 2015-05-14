@@ -1,4 +1,4 @@
-<a href="http://www.localz.co/"><img alt="Localz logo" align="right" width="50" height="50" src="http://www.localz.co/assets/images/logo-round.png" /></a> Spotz Android SDK
+<a href="http://www.localz.com/"><img alt="Localz logo" align="right" width="180" height="50" src="http://localz.com/wp-content/uploads/2015/02/localz_logo.png" /></a> Spotz Android SDK
 =================
 
 [Spotz](http://spotz.localz.co/) is a user engagement platform that utilizes Bluetooth Low Energy. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street. 
@@ -56,8 +56,8 @@ The sample app requires devices running Android 4.3 or newer.
   
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
-         src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
-    </a>    
+         src="http://localz.wpengine.com/wp-content/uploads/2014/03/app-store-300x102.jpg" />
+    </a>  
     As Android L now supports peripheral, we will have version of Android Beacon Toolkit sometime soon!
 
   4. Insert your Spotz application ID and client key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *Android* client key:
@@ -185,12 +185,12 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
         </receiver>
         <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver"  android:exported="false">
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
+                <action android:name="com.localz.spotz.sdk.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
+                <action android:name="com.localz.spotz.sdk.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
             </intent-filter>
         </receiver>
     3.2.These broadcast receivers are need to be implemented in the application(assuming com.foo.app is a package name of your application com.foo.app.receivers is a java package of your receivers).  
@@ -286,7 +286,6 @@ Your project is now ready to start using the Spotz SDK!
             // No BLE support
         }
 
----
 
 ###Listen for Events
   
@@ -310,14 +309,6 @@ Advanced Features
 Spotz SDK support restarting of monitoring for spotz after phone was rebooted. Just declare Broadcast Receiver with intent filter: "android.intent.action.BOOT_COMPLETED" as described in section 3.4. SDK will take care of everything else!
 
 #### Ranging
-<<<<<<< HEAD
-Ranging is an iOS term. There are two modes that app can be interested in points of interests (Spotz):   
-1. Monitoring - SDK will look for spotz with regular, resonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.   
-2. Ranging - SDK will scan with the aim of get distance to the beacons in spot. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging. 
-In Spotz Android SDK ranging implemented as following:    
-1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distangeand will only notify that you in range of the Spot if distance is less than you specify on the console.   
-2. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is by having handler scheduling runnable ever 1 sec to range.  
-=======
 Ranging is an iOS term. There are two ways that application can modes that app can monitor spotz:  
 1. Region Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.  
 2. Ranging - SDK will return distance to the previously discovered spotz. Ranging runs in your process and has to be scheduled by your process and typically very frequent (e.g. every few sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging.  
