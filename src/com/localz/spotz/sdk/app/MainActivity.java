@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class MainActivity extends Activity {
 	public static final String TAG = MainActivity.class.getSimpleName();
-	public static final String SPOT_ENTERED_OR_EXITED = "SPOT_ENTERED_OR_EXITED";
+	public static final String SPOT_ENTERED_OR_EXITED = ".SPOT_ENTERED_OR_EXITED";
 	private static final int REQUEST_BLUETOOTH = 100;
 
 	// This BroadcastReceiver is to be notified when device either enter or exit
@@ -48,8 +48,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		inSpotMap = new SpotzMap(this);
-        inSpotMap.readCache();
+		inSpotMap = SpotzMap.readCache(this);
 
 		rangingDistanceTextView = (TextView) findViewById(R.id.activity_spot_ranging_distance);
 		nameOfSpotText = (TextView) findViewById(R.id.activity_range_text);
@@ -77,6 +76,7 @@ public class MainActivity extends Activity {
 					spotz.stopScanningForSpotz(MainActivity.this);
 					startStop.setText(getString(R.string.start_scanning));
 					inSpotMap.clear();
+                    SpotzMap.writeToFile(inSpotMap, MainActivity.this);
 					adjustUI();
 				} else {
 					boolean isInitialised = spotz
@@ -87,6 +87,7 @@ public class MainActivity extends Activity {
 
 						startStop.setVisibility(View.INVISIBLE);
 						inSpotMap.clear();
+                        SpotzMap.writeToFile(inSpotMap, MainActivity.this);
 						// Initialise Spotz
 						initialiseSpotzSdk();
 					} else {
@@ -156,8 +157,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void adjustUI() {
-		inSpotMap = new SpotzMap(this);
-        inSpotMap.readCache();
+		inSpotMap = SpotzMap.readCache(this);
 
 		MainActivity.this.runOnUiThread(new Runnable() {
 			@Override
@@ -226,11 +226,13 @@ public class MainActivity extends Activity {
 		}
 
 		inSpotMap.put(spot.id, spot);
+        SpotzMap.writeToFile(inSpotMap, this);
 	}
 
 	private void setOutOfRange(final Spot spot) {
 		if (spot != null) {
 			inSpotMap.remove(spot.id);
+            SpotzMap.writeToFile(inSpotMap, MainActivity.this);
 		}
 
 		if (inSpotMap.isEmpty()) {
@@ -361,6 +363,7 @@ public class MainActivity extends Activity {
 										// this will write to storage
 										inSpotMap.put(spotId,
 												spotOfRangingBeacon);
+                                        SpotzMap.writeToFile(inSpotMap, MainActivity.this);
 									}
 								}
 								adjustUI();
@@ -379,6 +382,7 @@ public class MainActivity extends Activity {
 			Spot spot = inSpotMap.get(spotId);
 			spot.closestBeaconDistance = null;
 			inSpotMap.put(spotId, spot);
+            SpotzMap.writeToFile(inSpotMap, MainActivity.this);
 		}
 	}
 

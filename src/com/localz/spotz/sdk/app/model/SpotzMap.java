@@ -25,21 +25,18 @@ public class SpotzMap extends ConcurrentHashMap<String, Spot> {
 	
 	private static final long serialVersionUID = -7604275359152984786L;
 	private static String SPOTZ_MAP_FILE = "SpotzMap";
-	private File file;
-	
-	
-	public SpotzMap(Context context) {
-		super();
-		file = new File(context.getFilesDir(), SPOTZ_MAP_FILE);
-	}
 
-    public void readCache() {
+
+    public static SpotzMap readCache(Context context) {
         ObjectInputStream inputStream = null;
+        SpotzMap spotzMap = new SpotzMap();
         try {
+            File file = new File(context.getFilesDir(), SPOTZ_MAP_FILE);
             inputStream = new ObjectInputStream(new FileInputStream(file));
             ConcurrentHashMap<String, Spot> spotzFromFile = (ConcurrentHashMap<String, Spot>) inputStream
                     .readObject();
-            this.putAll(spotzFromFile);
+
+            spotzMap.putAll(spotzFromFile);
         } catch (OptionalDataException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -59,49 +56,31 @@ public class SpotzMap extends ConcurrentHashMap<String, Spot> {
                 e.printStackTrace();
             }
         }
+        return spotzMap;
     }
 
-    @Override
-	public Spot put(String key, Spot value) {
-		Spot spot = super.put(key, value);
-		writeToFile(); 
-		
-		return spot;
-	}
-	
-	@Override
-	public Spot remove(Object key) {
-		Spot spot = super.remove(key);
-		writeToFile();
-		
-		return spot;
-	}
-	 
-	@Override
-	public void clear() {
-		super.clear();
-		writeToFile(); 
-	}
 
-	private void writeToFile() {
-		ObjectOutputStream outputStream = null;
-		try {
-			outputStream = new ObjectOutputStream(new FileOutputStream(file));
-			outputStream.writeObject((ConcurrentHashMap<String, Spot>) this);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (outputStream != null) {
-				try {
-					outputStream.flush();
-					outputStream.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+    public static void writeToFile(SpotzMap spotMap, Context context) {
+        ObjectOutputStream outputStream = null;
+        try {
+            File file = new File(context.getFilesDir(), SPOTZ_MAP_FILE);
+
+            outputStream = new ObjectOutputStream(new FileOutputStream(file));
+            outputStream.writeObject((ConcurrentHashMap<String, Spot>) spotMap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.flush();
+                    outputStream.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
