@@ -3,7 +3,7 @@
 
 [Spotz](http://spotz.localz.co/) is a user engagement platform that utilizes Bluetooth Low Energy. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street. 
 
-The Spotz Android SDK allows your Android app to detect when it is in range of your Spotz and receive payload data - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
+The Spotz Android SDK allows your Android app to detect when it is in range of your Spotz and receive payload data - e.g. detailed information about an exhibit, promotional offers or media, it can be anything!
 
 Changelog
 =========
@@ -31,9 +31,9 @@ What does the sample app do?
 
 The app simply tells you if you are in the proximity of a Spot. 
 
-If you are in the proximity of a Spot, you will receive notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a Spot as "ranging", you will also see distance to the closest beacon in the spot. 
+If you are in the proximity of a Spot, you will receive a notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a Spot as "ranging", you will also see the distance to the closest beacon in the spot. 
 
-Monitoring will continue even if activity is exited, or even phone rebooted. 
+Monitoring will continue even if activity is exited, or a  phone rebooted. 
 
 How to run the sample app
 =========================
@@ -75,7 +75,7 @@ How to add the SDK to your own Project
 ======================================
 
 Your project must support minimum Android 2.3.3 API level 10.	
-Ensure that using ["Android SDK Manager"](http://developer.android.com/tools/help/sdk-manager.html) you downloaded "Google Play Services" Rev.22 or later. 
+Use ["Android SDK Manager"](http://developer.android.com/tools/help/sdk-manager.html) to downloaded "Google Play Services" Rev.22 or later. 
 
 If you're a **Gradle** user you can easily include the library by specifying it as
 a dependency in your build.gradle script:
@@ -193,8 +193,8 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
                 <action android:name="com.localz.spotz.sdk.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
             </intent-filter>
         </receiver>
-    3.2.These broadcast receivers are need to be implemented in the application(assuming com.foo.app is a package name of your application com.foo.app.receivers is a java package of your receivers).  
-        They will be invoked if device enters or exit a Spot. 
+    3.2.These broadcast receivers need to be implemented in the application(assuming com.foo.app is a package name of your application com.foo.app.receivers is a java package of your receivers).  
+        They will be invoked if a device enters or exits a Spot. 
         Example implementation can be found in this sample application. Typical implementation will create a notification.  
         
         <receiver android:name="com.foo.app.receivers.OnEnteredSpotBroadcastReceiver" android:exported="false" >
@@ -209,7 +209,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
             </intent-filter>
         </receiver>
         
-    3.3.This receiver only required if you integrated Spotz platform with 3rd party system.The receiver will be invoked when reply is received from 3rd party system. See section "Integration with 3rd party systems" below:
+    3.3.This receiver is only required if you integrated Spotz platform with 3rd party system.The receiver will be invoked when a reply is received from 3rd party system. See section "Integration with 3rd party systems" below:
     
         <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
             <intent-filter>
@@ -217,7 +217,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
             </intent-filter>
         </receiver>
 
-    3.4.This receiver will be invoked when phone rebooted. Register this received only if you required to restart monitoring after reboot.  
+    3.4.This receiver will be invoked when a phone is rebooted. Register this receiver only if you required to restart monitoring after reboot.  
    
         <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" android:exported="false">
             <intent-filter>  
@@ -267,7 +267,7 @@ Your project is now ready to start using the Spotz SDK!
         // scanDurationMs - millisecs to scan for
         Spotz.getInstance().startScanningForSpotz(context, scanIntervalMs, scanDurationMs);
   
-  **Important!** It might be tempting to have very short scanIntervalMs so that your application will be more responsive to beacons. However, in Android 5.1 the change is introduces where intervals less than 60 sec is unlikely to be honoured. You might see the following errors in the adb log: "Suspiciously short interval 30000 millis; expanding to 60 seconds". To support up to second updates when app is in foreground use ranging as described in the Advanced Features section below. 
+  **Important!** It might be tempting to have very short `scanIntervalMs` so that your application will be more responsive to beacons. However, in Android 5.1 the change is introduces where intervals less than 60 sec is unlikely to be honoured. You might see the following errors in the adb log: "Suspiciously short interval 30000 millis; expanding to 60 seconds". To support up to second updates when app is in foreground use ranging as described in the Advanced Features section below. 
   
   The SDK will scan for beacons while your app is in the background.
   
@@ -299,7 +299,7 @@ Your project is now ready to start using the Spotz SDK!
   
 #### On 3rd party Integration response received
 
-  To listen for when response received from third party integration systems, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ\_ON\_INTEGRATION\_RESPONDED</code> in AndroidManifest.xml as described in section 3.2.
+  To listen for when a response is received from third party integration systems, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ\_ON\_INTEGRATION\_RESPONDED</code> in AndroidManifest.xml as described in section 3.2.
         
 
 
@@ -313,8 +313,8 @@ Ranging is an iOS term. There are two ways that application can modes that app c
 1. Region Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.  
 2. Ranging - SDK will return distance to the previously discovered spotz. Ranging runs in your process and has to be scheduled by your process and typically very frequent (e.g. every few sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging.  
 In Spotz Android SDK ranging implemented as following:  
-1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distance and will only notify that you in range of the Spot if distance is less than you specify on the console.  
-2. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application handler schedules runnable ever 1 sec:  
+1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging a beacon is detected, SDK will calculate the distance and will only notify that you are in range of the Spot if the distance is less than you specify on the console.  
+2. Once you are in range, if you open the app, you will need to schedule ranging, which can be achieved in many different ways. In the sample application a `rangingHandler` schedules `rangingRunnable` ever 1 sec:  
 
 	Handler rangingHandler = new Handler();
 	Runnable rangingRunnable = new Runnable() {
@@ -365,7 +365,7 @@ In this case, SDK initialization will be similar to the following:
 
 #### Integration with 3rd party systems  
 
-[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:  
+[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieved by providing the identity attributes to Spotz when initialising Spotz SDK. E.g.:  
 
 	final DeviceUpdateIdsPutRequest.Ids ids = new DeviceUpdateIdsPutRequest.Ids();
 	ids = new DeviceUpdateIdsPutRequest.Ids();
