@@ -130,7 +130,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     </repositories>
     ...
     
-You will also need add dependency to google play services. Google play services is not available via public maven repositories. You will need to create package (apklib or aar), load to your local maven repository and then use it as reference in your pom.xml. The following tool should help: [https://github.com/simpligility/maven-android-sdk-deployer/](https://github.com/simpligility/maven-android-sdk-deployer/). 
+You will also need to add dependency to google play services. Google play services is not available via public maven repositories. You will need to create package (apklib or aar), load to your local maven repository and then use it as reference in your pom.xml. The following tool should help: [https://github.com/simpligility/maven-android-sdk-deployer/](https://github.com/simpligility/maven-android-sdk-deployer/). 
 
 Otherwise, if you are old school, you can manually copy all the JARs in the libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
@@ -162,7 +162,7 @@ There are only 3 actions to implement - **initialize, scan, and listen!**
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> 
         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>  
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> 
-Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if you want to restart monitoring after phone reboot.
+Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if you want to restart monitoring after phone reboot.
 
   2. Define the following service in your AndroidManifest.xml:
 
@@ -217,7 +217,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
             </intent-filter>
         </receiver>
 
-    3.4.This receiver will be invoked when a phone is rebooted. Register this receiver only if you required to restart monitoring after reboot.  
+    3.4.This receiver will be invoked when a phone is rebooted. Register this receiver only if you are required to restart monitoring after reboot.  
    
         <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" android:exported="false">
             <intent-filter>  
@@ -267,7 +267,7 @@ Your project is now ready to start using the Spotz SDK!
         // scanDurationMs - millisecs to scan for
         Spotz.getInstance().startScanningForSpotz(context, scanIntervalMs, scanDurationMs);
   
-  **Important!** It might be tempting to have very short `scanIntervalMs` so that your application will be more responsive to beacons. However, in Android 5.1 the change is introduces where intervals less than 60 sec is unlikely to be honoured. You might see the following errors in the adb log: "Suspiciously short interval 30000 millis; expanding to 60 seconds". To support up to second updates when app is in foreground use ranging as described in the Advanced Features section below. 
+  **Important!** It might be tempting to have very short `scanIntervalMs` so that your application will be more responsive to beacons. However, in Android 5.1 changes have been introduced where intervals, which are less than 60 secs, are unlikely to be honoured. You might see the following errors in the adb log: "Suspiciously short interval 30000 millis; expanding to 60 seconds". To support up to second updates when app is in foreground use ranging as described in the Advanced Features section below. 
   
   The SDK will scan for beacons while your app is in the background.
   
@@ -309,7 +309,7 @@ Advanced Features
 Spotz SDK support restarting of monitoring for spotz after phone was rebooted. Just declare Broadcast Receiver with intent filter: "android.intent.action.BOOT_COMPLETED" as described in section 3.4. SDK will take care of everything else!
 
 #### Ranging
-Ranging is an iOS term. There are two ways that application can modes that app can monitor spotz:  
+Ranging is an iOS term. There are two ways in which the application can monitor spotz:  
 1. Region Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.  
 2. Ranging - SDK will return distance to the previously discovered spotz. Ranging runs in your process and has to be scheduled by your process and typically very frequent (e.g. every few sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging.  
 In Spotz Android SDK ranging implemented as following:  
